@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithToken } from '@store/baseQuery';
-import { IProduct } from '@types';
+import { TProduct } from '@types';
 
 export interface IWishlist {
   productId: string;
@@ -8,7 +8,7 @@ export interface IWishlist {
 export interface IGetLoggedUserWishList {
   status: string;
   results: number;
-  data: IProduct[];
+  data: TProduct[];
 }
 export interface ILikeToggle {
   isLiked: boolean;

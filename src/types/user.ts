@@ -1,4 +1,4 @@
-import { TAddresses } from './address';
+import { TAddress } from './address';
 
 export type TUser = {
   _id: string;
@@ -15,7 +15,7 @@ export type TUser = {
   role: 'user' | 'manager' | 'admin';
   active: boolean;
   wishlist: string[];
-  addresses: TAddresses[];
+  addresses: TAddress[];
 };
 
 export type TGetUserResponse = {

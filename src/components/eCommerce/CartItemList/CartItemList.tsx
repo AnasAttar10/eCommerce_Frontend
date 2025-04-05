@@ -1,4 +1,4 @@
-import { IProduct } from '@types';
+import { TProduct } from '@types';
 import CartItem from '../CartItem/CartItem';
 import { AppDispatch } from '@store/index';
 type TCartItem = {
@@ -6,7 +6,7 @@ type TCartItem = {
   color: string;
   price: number;
   quantity: number;
-  product: IProduct;
+  product: TProduct;
 };
 
 export type TUpdateCartItemQuantity = (params: {

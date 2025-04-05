@@ -7,9 +7,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { Input } from '@components/forms';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
-import { TGetMe } from '@types';
+import { TGetUserResponse } from '@types';
 type TUpdateMeForm = {
-  user: TGetMe;
+  user: TGetUserResponse;
   handleShowForm: (status: boolean) => void;
 };
 const UpdateMeForm = ({ user, handleShowForm }: TUpdateMeForm) => {

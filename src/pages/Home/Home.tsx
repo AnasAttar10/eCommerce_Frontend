@@ -1,7 +1,8 @@
 import { Button, Carousel, Container } from 'react-bootstrap';
-import Adv1 from '@assets/images/32.jpg';
-import Adv2 from '@assets/images/481949113_1054939243333181_195386653783603293_n.jpg';
-import Adv3 from '@assets/images/61cTi9MBqOL._AC_SL1500_.jpg';
+import Adv1 from '@assets/images/image.jpg';
+import Adv2 from '@assets/images/image2.png';
+import Adv3 from '@assets/images/image3.jpg';
+import Adv4 from '@assets/images/image4.png';
 import Loading from '@components/feedback/Loading/Loading';
 import GridList from '@components/common/GridList/GridList';
 import { useGetProductsQuery } from '@store/Product/productsApi';
@@ -10,7 +11,7 @@ import { useGetCategoriesQuery } from '@store/Category/categoriesApi';
 import { Category, Product } from '@components/eCommerce';
 import Brand from '@components/eCommerce/Brand/Brand';
 import { Link } from 'react-router-dom';
-const advertisements = [Adv1, Adv2, Adv3];
+const advertisements = [Adv1, Adv2, Adv3, Adv4];
 const queryString = '?page=1&limit=4';
 const queryStringForBestSelling = '?page=1&limit=4&sort=sold';
 const Home = () => {
@@ -40,7 +41,13 @@ const Home = () => {
         <Carousel interval={3000}>
           {advertisements.map((a, idx) => (
             <Carousel.Item key={idx}>
-              <img className="d-block w-100" src={a} alt={idx + 'slide'} />
+              <div style={{ width: '100%', height: '100vh' }}>
+                <img
+                  className="d-block w-100 h-100"
+                  src={a}
+                  alt={idx + 'slide'}
+                />
+              </div>
             </Carousel.Item>
           ))}
         </Carousel>

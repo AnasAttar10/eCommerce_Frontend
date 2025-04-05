@@ -2,7 +2,6 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 import { categoriesApi } from './Category/categoriesApi';
 import { productsApi } from './Product/productsApi';
-import cart from './cart/cartSlice';
 import {
   persistStore,
   persistReducer,
@@ -29,21 +28,15 @@ import { reviewsApi } from './review/reviewsApi';
 const rootConfigReducer = {
   key: 'root',
   storage,
-  whitelist: ['cart', 'auth'],
+  whitelist: ['auth'],
 };
 const authConfigReducer = {
   key: 'auth',
   storage,
   whitelist: ['user', 'token'],
 };
-const cartConfigReducer = {
-  key: 'cart',
-  storage,
-  whitelist: ['items'],
-};
 const rootReducer = combineReducers({
   auth: persistReducer(authConfigReducer, authSlice),
-  cart: persistReducer(cartConfigReducer, cart),
   [userApi.reducerPath]: userApi.reducer,
   [addressApi.reducerPath]: addressApi.reducer,
   [cartApi.reducerPath]: cartApi.reducer,
@@ -81,8 +74,6 @@ export const store = configureStore({
     ),
 });
 export const persistor = persistStore(store);
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
 setupListeners(store.dispatch);
