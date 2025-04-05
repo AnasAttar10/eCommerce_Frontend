@@ -1,0 +1,13 @@
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.wrapper h1 {
+  font-size: 130px;
+}
+.wrapper p {
+  font-size: 50px;
+}
