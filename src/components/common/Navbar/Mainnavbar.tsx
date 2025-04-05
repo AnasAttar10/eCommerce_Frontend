@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
-const Mainnavbar = () => {
+const MainNavbar = () => {
   const dispatch = useAppDispatch();
   const { user, token } = useAppSelector((state) => state.auth);
 
@@ -74,4 +74,4 @@ const Mainnavbar = () => {
   );
 };
 
-export default Mainnavbar;
+export default MainNavbar;

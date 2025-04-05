@@ -1,6 +1,6 @@
 import { Badge } from 'react-bootstrap';
 import styles from './styles.module.css';
-import Mainnavbar from '../Navbar/Mainnavbar';
+import MainNavbar from '../Navbar/Mainnavbar';
 import HeaderLeftBar from './HeaderLeftBar/HeaderLeftBar';
 import { useAppSelector } from '@store/hooks';
 
@@ -11,11 +11,11 @@ const Header = () => {
     <header>
       <div className={headerContainer}>
         <h1 className={headerLogo}>
-          <span>Our</span> <Badge>eCom</Badge>
+          <span>Q</span> <Badge>Shop</Badge>
         </h1>
         {user.role === 'user' && <HeaderLeftBar />}
       </div>
-      <Mainnavbar />
+      <MainNavbar />
     </header>
   );
 };

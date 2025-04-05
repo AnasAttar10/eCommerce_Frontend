@@ -97,7 +97,8 @@ const Product = memo(
                 price,
                 imageCover,
                 quantity,
-                isLiked: true,
+                description: '',
+                category: '',
               });
             }
           }
