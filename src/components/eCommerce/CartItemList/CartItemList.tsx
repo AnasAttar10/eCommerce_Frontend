@@ -30,7 +30,7 @@ const CartItemList = ({ cartItems }: TCartList) => {
         _id={p._id}
         imageCover={p.product.imageCover}
         title={p.product.title}
-        sold={p.product.sold || 0}
+        product_quantity={p.product.quantity || 0}
         color={p.color}
         price={p.price}
         quantity={p.quantity}

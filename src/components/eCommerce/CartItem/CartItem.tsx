@@ -16,7 +16,7 @@ type TCartItemComponent = {
   imageCover: string;
   price: number;
   color: string;
-  sold: number;
+  product_quantity: number;
   quantity: number;
 };
 
@@ -27,7 +27,7 @@ const CartItem = memo(
     imageCover,
     price,
     color,
-    sold,
+    product_quantity,
     quantity,
   }: TCartItemComponent) => {
     const dispatch = useAppDispatch();
@@ -43,7 +43,7 @@ const CartItem = memo(
 
     const renderOptions = useMemo(
       () =>
-        Array(sold)
+        Array(product_quantity)
           .fill(0)
           .map((_, index) => {
             const quantity = ++index;
@@ -53,7 +53,7 @@ const CartItem = memo(
               </option>
             );
           }),
-      [sold]
+      [product_quantity]
     );
 
     const removeItemHandler = async (_id: string) => {

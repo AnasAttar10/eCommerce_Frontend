@@ -60,6 +60,8 @@ const ProductPage = () => {
     }
   );
   const handleAddToCar = async () => {
+    console.log(id);
+
     if (id && currentColor)
       await addProductToCart({ productId: id, color: currentColor });
   };
@@ -153,7 +155,7 @@ const ProductPage = () => {
                 <Button
                   variant="info"
                   style={{ color: 'white', width: '100%' }}
-                  onClick={handleAddToCar}
+                  onClick={() => handleAddToCar()}
                   disabled={addProductToCartLoading || isMax}
                 >
                   {addProductToCartLoading ? (
