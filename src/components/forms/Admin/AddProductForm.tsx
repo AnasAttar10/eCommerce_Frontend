@@ -335,6 +335,7 @@ const AddProductForm = ({ recordId, handleCloseForm }: TAddProductForm) => {
         <Input
           label="Product Description "
           name="description"
+          as="textarea"
           register={register}
           error={errors.description?.message}
         />

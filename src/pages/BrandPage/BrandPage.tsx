@@ -19,7 +19,7 @@ const Brands = () => {
     isLoading,
     error,
   } = useGetBrandsQuery(stringQueryResult, {
-    skip: isSendRequest,
+    skip: searchValue ? isSendRequest : false,
   });
   return (
     <Container>

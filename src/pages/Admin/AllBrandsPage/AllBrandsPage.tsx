@@ -23,7 +23,7 @@ const AllBrandsPage = () => {
     isLoading,
     error,
   } = useGetBrandsQuery(stringQueryResult, {
-    skip: isSendRequest,
+    skip: searchValue ? isSendRequest : false,
   });
   return (
     <div>

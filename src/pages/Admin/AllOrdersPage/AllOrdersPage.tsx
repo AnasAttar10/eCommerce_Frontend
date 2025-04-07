@@ -27,10 +27,8 @@ const AllOrdersPage = () => {
 
   const { handlePageChange, currentPage, stringQueryResult, isSendRequest } =
     useQueryString(limit, undefined, undefined, searchValue);
-  console.log(isSendRequest);
-
   const { data, isLoading, error } = useGetAllOrdersQuery(stringQueryResult, {
-    skip: isSendRequest,
+    skip: searchValue ? isSendRequest : false,
   });
   const [show, setShow] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<TOrder | undefined>(

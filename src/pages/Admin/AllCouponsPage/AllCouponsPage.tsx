@@ -20,7 +20,9 @@ const AllCouponsPage = () => {
     data: records,
     isLoading,
     error,
-  } = useGetCouponsQuery(stringQueryResult, { skip: isSendRequest });
+  } = useGetCouponsQuery(stringQueryResult, {
+    skip: searchValue ? isSendRequest : false,
+  });
 
   const { recordId, handleEdit, resetRecordId } = useEditRecord();
 

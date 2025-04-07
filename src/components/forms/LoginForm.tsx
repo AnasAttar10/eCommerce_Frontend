@@ -34,6 +34,7 @@ const LoginForm = ({ handleNavigate }: TLoginForm) => {
         <Input
           label="password"
           name="password"
+          type="password"
           register={register}
           error={errors.password?.message}
         />

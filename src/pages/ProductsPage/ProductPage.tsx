@@ -4,7 +4,7 @@ import { Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import styles from './styles.module.css';
 import { useAddProductToCartMutation } from '@store/cart/cartApi';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '@store/hooks';
 import ReviewForm from '@components/forms/ReviewForm';
 import { useGetProductReviewsQuery } from '@store/review/reviewsApi';
@@ -14,6 +14,7 @@ import useEditRecord from '@hooks/useEditRecord';
 import { TReview } from '@types';
 import { Heading } from '@components/common';
 import useQueryString from '@hooks/useProductsQueryString';
+import { FaStar } from 'react-icons/fa6';
 import PaginationComponent from '@components/common/PaginationComponent/PaginationComponent';
 const {
   imagesContainer,
@@ -24,6 +25,8 @@ const {
   productInformationContainer,
   category,
   descriptionWrapper,
+  descriptionWrapperFull,
+  showBtn,
   reviewsContainer,
   myReviewWrapper,
 } = styles;
@@ -37,6 +40,8 @@ const ProductPage = () => {
   const [currentColor, setCurrentColor] = useState<string | undefined>(
     undefined
   );
+  const [showAllDescription, setShowAllDescription] = useState(false);
+  // const [minLength, setMinLength] = useState(230);
   const { data, isLoading, error } = useGetProductQuery(id as string, {
     skip: !id,
   });
@@ -60,10 +65,7 @@ const ProductPage = () => {
     }
   );
   const handleAddToCar = async () => {
-    console.log(id);
-
-    if (id && currentColor)
-      await addProductToCart({ productId: id, color: currentColor });
+    if (id) await addProductToCart({ productId: id, color: currentColor });
   };
 
   const handleCloseForm = () => {
@@ -80,32 +82,47 @@ const ProductPage = () => {
   useEffect(() => {
     if (myReview && !recordId) setShowForm(false);
   }, [recordId, myReview]);
+  const [showButton, setShowButton] = useState(false);
+  const pRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const el = pRef.current;
+
+    if (!el) return;
+
+    const isTruncated = el.scrollHeight > el.clientHeight;
+    setShowButton(isTruncated);
+  }, [data?.data.description]);
 
   return (
-    <Container className="overflow-hidden">
+    <Container>
       <Loading isLoading={isLoading} error={error} type="productPage">
-        <Row className="w-100 p-2">
-          <Col md={6} className="mb-3">
+        <Row>
+          <Col md={6} className="mb-3 mt-3">
             <div className={imagesContainer}>
               <div className={imageCoverWrapper}>
                 <img src={data?.data.imageCover} />
               </div>
-              <div className={imagesWrapper}>
-                {data?.data.images?.map((i, idx) => (
-                  <div key={idx} className={imageWrapper}>
-                    <img className={image} src={i} alt={`slide${idx + 1}`} />
-                  </div>
-                ))}
-              </div>
+              {data?.data.images && data?.data.images.length > 0 && (
+                <div className={imagesWrapper}>
+                  {data?.data.images?.map((i, idx) => (
+                    <div key={idx} className={imageWrapper}>
+                      <img className={image} src={i} alt={`slide${idx + 1}`} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </Col>
           <Col md={6}>
             <div className={productInformationContainer}>
-              <h2>{data?.data.title}</h2>
+              <h2 style={{ textTransform: 'capitalize' }}>
+                {data?.data.title}
+              </h2>
               <p className={category}>{data?.data.category?.name}</p>
               <div style={{ display: 'flex', gap: '5px' }}>
                 {Number(data?.data.priceAfterDiscount) > 1 && (
-                  <h3>
+                  <h3 style={{ color: 'red' }}>
                     {data?.data?.priceAfterDiscount}
                     <span style={{ fontSize: '18px' }}>₪</span>
                   </h3>
@@ -128,7 +145,17 @@ const ProductPage = () => {
               <p></p>
               <h4>Quantity : {data?.data.quantity}</h4>
               <p></p>
-              {user.role === 'admin' && <h4>sold : {data?.data.sold}</h4>}
+              {user.role === 'admin' && <h4>Sold : {data?.data.sold}</h4>}
+              {data?.data?.ratingsQuantity !== undefined &&
+                data?.data?.ratingsQuantity > 0 && (
+                  <h4>Ratings Quantity : {data?.data.ratingsQuantity}</h4>
+                )}
+              {data?.data.ratingsAverage && data?.data.ratingsAverage > 0 && (
+                <h4>
+                  Ratings Average : {data?.data.ratingsAverage}{' '}
+                  <FaStar color="yellow" />
+                </h4>
+              )}
               <div
                 style={{ display: 'flex', gap: '10px', alignItems: 'center' }}
               >
@@ -142,21 +169,44 @@ const ProductPage = () => {
                       cursor: 'pointer',
                       backgroundColor: c,
                       borderRadius: '50%',
-                      width: c === currentColor ? '70px' : '50px',
-                      height: c === currentColor ? '70px' : '50px',
+                      width: c === currentColor ? '35px' : '25px',
+                      height: c === currentColor ? '35px' : '25px',
                     }}
                     onClick={() => setCurrentColor(c)}
                   ></p>
                 ))}
               </div>
               <h4>Description</h4>
-              <p className={descriptionWrapper}>{data?.data.description}</p>
+              <p
+                ref={pRef}
+                className={
+                  showAllDescription
+                    ? descriptionWrapperFull
+                    : descriptionWrapper
+                }
+              >
+                {data?.data.description}
+              </p>
+              {!showAllDescription && showButton && (
+                <button
+                  onClick={() => setShowAllDescription(true)}
+                  className={showBtn}
+                >
+                  Show More
+                </button>
+              )}
               {user.role != 'admin' && (
                 <Button
                   variant="info"
                   style={{ color: 'white', width: '100%' }}
                   onClick={() => handleAddToCar()}
-                  disabled={addProductToCartLoading || isMax}
+                  disabled={
+                    addProductToCartLoading ||
+                    isMax ||
+                    (data?.data.colors &&
+                      data?.data.colors?.length > 0 &&
+                      !currentColor)
+                  }
                 >
                   {addProductToCartLoading ? (
                     <>
@@ -181,7 +231,6 @@ const ProductPage = () => {
             handleCloseForm={handleCloseForm}
           />
         )}
-
         <div className={reviewsContainer}>
           {myReview && !showForm && (
             <div className={myReviewWrapper}>

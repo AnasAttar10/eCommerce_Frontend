@@ -21,7 +21,9 @@ const AllCategoriesPage = () => {
     data: records,
     isLoading,
     error,
-  } = useGetCategoriesQuery(stringQueryResult, { skip: isSendRequest });
+  } = useGetCategoriesQuery(stringQueryResult, {
+    skip: searchValue ? isSendRequest : false,
+  });
 
   return (
     <div>

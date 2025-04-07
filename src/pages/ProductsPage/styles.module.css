@@ -36,7 +36,6 @@
 }
 .productInformationContainer {
   position: relative;
-  max-height: 100vh;
 }
 .category {
   text-transform: capitalize;
@@ -48,9 +47,30 @@
   border: 2px solid gray;
 }
 .descriptionWrapper {
-  max-height: 280px;
+  box-sizing: border-box;
+  max-height: 140px;
+  overflow: hidden;
+  position: relative;
+  padding-right: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+.descriptionWrapperFull {
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
+.showBtn {
+  background: none;
+  border: none;
+  color: gray;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  margin: 4px 0;
+}
 .wishlistBtn {
   position: absolute;
   top: 7px;
@@ -67,6 +87,9 @@
 
 .wishlistBtn:hover {
   box-shadow: 0px 0px 10px -3px rgba(0, 0, 0, 0.4);
+}
+.reviewsContainer {
+  padding: 10px;
 }
 .myReviewWrapper {
   margin-bottom: 10px;

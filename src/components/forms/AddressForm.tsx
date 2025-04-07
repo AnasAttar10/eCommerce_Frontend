@@ -53,7 +53,7 @@ const AddressForm = memo(({ handleShowForm }: TAddressForm) => {
           <MdArrowBack size={20} />
         </div>
       </div>
-      <Form onSubmit={handleSubmit(submit)}>
+      <Form onSubmit={handleSubmit(submit)} className="col-xs-12 col-md-6">
         <Input
           label="city"
           name="city"

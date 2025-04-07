@@ -18,7 +18,7 @@ const Categories = () => {
     isLoading,
     error,
   } = useGetCategoriesQuery(stringQueryResult, {
-    skip: isSendRequest,
+    skip: searchValue ? isSendRequest : false,
   });
   return (
     <Container>

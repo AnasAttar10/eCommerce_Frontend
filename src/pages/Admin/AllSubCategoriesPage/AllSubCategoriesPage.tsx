@@ -21,7 +21,9 @@ const AllSubCategoriesPage = () => {
     data: records,
     isLoading,
     error,
-  } = useGetAllSubCategoriesQuery(stringQueryResult, { skip: isSendRequest });
+  } = useGetAllSubCategoriesQuery(stringQueryResult, {
+    skip: searchValue ? isSendRequest : false,
+  });
   return (
     <div>
       <GridListAndForm

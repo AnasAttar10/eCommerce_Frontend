@@ -21,7 +21,9 @@ const AllProductsPage = () => {
     data: records,
     isLoading,
     error,
-  } = useGetProductsQuery(stringQueryResult, { skip: isSendRequest });
+  } = useGetProductsQuery(stringQueryResult, {
+    skip: searchValue ? isSendRequest : false,
+  });
   return (
     <div>
       <GridListAndForm

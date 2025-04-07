@@ -8,6 +8,7 @@ const useRemovingMessage = () => {
   const handleRemovingMessage = (id: string | undefined) => {
     if (id) {
       setSelectedElement(id);
+      setShowRemovingMessage(true);
     } else {
       setShowRemovingMessage(true);
     }

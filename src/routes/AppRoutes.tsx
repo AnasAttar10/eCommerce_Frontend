@@ -108,19 +108,6 @@ const routes = createBrowserRouter([
             </MySuspense>
           </ProtectedRoutes>
         ),
-        loader: ({ params }) => {
-          if (
-            typeof params.prefix !== 'string' ||
-            !/^[a-z]+$/i.test(params.prefix)
-          ) {
-            throw new Response('Bad Request', {
-              statusText: 'Category not found ',
-              status: 400,
-            });
-          }
-
-          return true;
-        },
       },
       {
         path: 'products',

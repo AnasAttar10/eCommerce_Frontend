@@ -36,7 +36,10 @@ const ForgotPasswordForm = () => {
   }, [isSuccess, navigate]);
   return (
     <div>
-      <Heading title="Forgot The Password" />
+      <Heading title="Find your account" />
+      <p>
+        Please enter your email or mobile number to search for your account.
+      </p>
       {data && <SuccessMessage message={data.message} />}
       <Form onSubmit={handleSubmit(submit)}>
         <Input

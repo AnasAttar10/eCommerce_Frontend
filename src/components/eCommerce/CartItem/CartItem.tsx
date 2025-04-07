@@ -113,7 +113,14 @@ const CartItem = memo(
             <h3>
               {price} <span style={{ fontSize: '18px' }}>₪</span>
             </h3>
-            <h3>{color}</h3>
+            <span
+              style={{
+                width: '25px',
+                height: '25px',
+                backgroundColor: color,
+                borderRadius: '50%',
+              }}
+            ></span>
             <Button
               variant="secondary"
               style={{ color: 'white', width: '100px' }}
