@@ -11,7 +11,6 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import SortBy from './SortBy';
 import useQueryString from '@hooks/useProductsQueryString';
-import { useEffect, useState } from 'react';
 import useSearchInput from '@hooks/useSearchInput';
 import SearchInput from '@components/forms/SearchInput/SearchInput';
 const limit = 10;
@@ -26,25 +25,26 @@ const Products = () => {
     handleFilterFormChange,
     currentPage,
     stringQueryResult,
+    isSendRequest,
   } = useQueryString(limit, prefix, searchValue);
 
-  const [prevQueryString, setPrevQueryString] = useState(stringQueryResult);
+  // const [prevQueryString, setPrevQueryString] = useState(stringQueryResult);
 
-  useEffect(() => {
-    const interval = setTimeout(() => {
-      if (stringQueryResult !== prevQueryString) {
-        setPrevQueryString(stringQueryResult);
-      }
-      return () => clearTimeout(interval);
-    }, 2000);
-  }, [stringQueryResult, prevQueryString]);
+  // useEffect(() => {
+  //   const interval = setTimeout(() => {
+  //     if (stringQueryResult !== prevQueryString) {
+  //       setPrevQueryString(stringQueryResult);
+  //     }
+  //     return () => clearTimeout(interval);
+  //   }, 2000);
+  // }, [stringQueryResult, prevQueryString]);
 
   const {
     error,
     isLoading: productsLoading,
     data: products,
   } = useGetProductsQuery(stringQueryResult, {
-    skip: stringQueryResult !== prevQueryString,
+    skip: searchValue ? isSendRequest : false,
   });
 
   const categoryId = products?.data[0]?.category;

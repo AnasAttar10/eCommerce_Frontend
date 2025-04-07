@@ -64,7 +64,7 @@ const FilterForm = ({
           name="brands"
           error={errors.brands?.message}
           data={brands?.data ?? []}
-          flexDirection="column"
+          flexDirection="row"
         />
       )}
       {showSubCategories && (
@@ -74,7 +74,7 @@ const FilterForm = ({
           name="subcategories"
           error={errors.subcategories?.message}
           data={subCategories?.data ?? []}
-          flexDirection="column"
+          flexDirection="row"
         />
       )}
       {showPrice && (

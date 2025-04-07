@@ -7,6 +7,7 @@ type TInput<T extends FieldValues> = {
   error?: string;
   control: Control<T>;
   flexDirection?: 'row' | 'column';
+  flexWrap?: 'wrap' | 'nowrap';
 };
 const CheckboxInput = <T extends FieldValues>({
   label,
@@ -15,6 +16,7 @@ const CheckboxInput = <T extends FieldValues>({
   data,
   control,
   flexDirection,
+  flexWrap,
 }: TInput<T>) => {
   return (
     <>
@@ -30,6 +32,7 @@ const CheckboxInput = <T extends FieldValues>({
                 style={{
                   display: 'flex',
                   flexDirection: flexDirection ?? 'row',
+                  flexWrap: flexWrap ?? 'wrap',
                 }}
               >
                 {data &&

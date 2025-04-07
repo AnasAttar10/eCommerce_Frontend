@@ -5,18 +5,24 @@ import PaginationComponent from '@components/common/PaginationComponent/Paginati
 import { Product } from '@components/eCommerce';
 import Loading from '@components/feedback/Loading/Loading';
 import AddProductForm from '@components/forms/Admin/AddProductForm';
+import FilterForm from '@components/forms/FilterForm';
 import SearchInput from '@components/forms/SearchInput/SearchInput';
 import useEditRecord from '@hooks/useEditRecord';
 import useQueryString from '@hooks/useProductsQueryString';
 import useSearchInput from '@hooks/useSearchInput';
 import { useGetProductsQuery } from '@store/Product/productsApi';
-import { Container } from 'react-bootstrap';
+import { Col, Container } from 'react-bootstrap';
 const limit = 10;
 const AllProductsPage = () => {
   const { searchValue, handleOnSearch } = useSearchInput();
   const { recordId, handleEdit, resetRecordId } = useEditRecord();
-  const { handlePageChange, currentPage, stringQueryResult, isSendRequest } =
-    useQueryString(limit, undefined, searchValue);
+  const {
+    handlePageChange,
+    handleFilterFormChange,
+    currentPage,
+    stringQueryResult,
+    isSendRequest,
+  } = useQueryString(limit, undefined, searchValue);
   const {
     data: records,
     isLoading,
@@ -24,6 +30,7 @@ const AllProductsPage = () => {
   } = useGetProductsQuery(stringQueryResult, {
     skip: searchValue ? isSendRequest : false,
   });
+  const categoryId = records?.data[0]?.category;
   return (
     <div>
       <GridListAndForm
@@ -44,6 +51,15 @@ const AllProductsPage = () => {
               <SearchInput handleOnSearch={handleOnSearch} />
             </div>
           </div>
+          <Col xs={12} sm={12} md={12} lg={12} className="mb-5">
+            <FilterForm
+              categoryId={categoryId ?? ''}
+              handleFilterFormChange={handleFilterFormChange}
+              showBrands
+              showSubCategories
+              showPrice
+            />
+          </Col>
           <Loading isLoading={isLoading} error={error} type="product">
             <GridList
               emptyMessage={'There Are No Products'}
