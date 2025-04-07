@@ -1,9 +1,10 @@
 import styles from './styles.module.css';
 const { footerContainer } = styles;
+const currentYear = new Date().getFullYear().toString();
 const Footer = () => {
   return (
     <div className={footerContainer}>
-      © 2024 Our eCom. All rights reserved.
+      © {currentYear} Q Shop . All rights reserved.
     </div>
   );
 };
