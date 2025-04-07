@@ -7,7 +7,7 @@ const filterSchema = z
       .refine((values) => values.every((val) => /^[a-f\d]{24}$/i.test(val)), {
         message: 'Invalid MongoDB ObjectId',
       }),
-    subCategories: z
+    subcategories: z
       .array(z.string())
       .refine((values) => values.every((val) => /^[a-f\d]{24}$/i.test(val)), {
         message: 'Invalid MongoDB ObjectId',

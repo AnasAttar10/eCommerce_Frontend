@@ -33,9 +33,9 @@ const useQueryString = (
       const result = filterForm.brands.map((b) => b).join(',');
       stringQuery += 'brand=' + result + '&';
     }
-    if (filterForm?.subCategories && filterForm?.subCategories.length > 0) {
-      const result = filterForm.subCategories.map((b) => b).join(',');
-      stringQuery += 'subCategories=' + result + '&';
+    if (filterForm?.subcategories && filterForm?.subcategories.length > 0) {
+      const result = filterForm.subcategories.map((b) => b).join(',');
+      stringQuery += 'subcategories=' + result + '&';
     }
     if (filterForm?.priceF && filterForm?.priceF >= 0) {
       stringQuery += 'price[gte]=' + filterForm.priceF + '&';

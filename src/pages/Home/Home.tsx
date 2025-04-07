@@ -13,7 +13,7 @@ import Brand from '@components/eCommerce/Brand/Brand';
 import { Link } from 'react-router-dom';
 const advertisements = [Adv1, Adv2, Adv3, Adv4];
 const queryString = '?page=1&limit=4';
-const queryStringForBestSelling = '?page=1&limit=4&sort=sold';
+const queryStringForBestSelling = '?page=1&limit=4&sort=-sold';
 const Home = () => {
   const {
     data: categories,

@@ -57,20 +57,6 @@ const FilterForm = ({
         padding: '10px 0',
       }}
     >
-      {/* <div
-        style={{
-          width: '90%',
-          margin: 'auto',
-        }}
-      >
-        <Input
-          placeholder="Search"
-          name="search"
-          register={register}
-          error={errors.search?.message}
-        />
-      </div> */}
-
       {showBrands && (
         <CheckboxInput
           control={control}
@@ -84,9 +70,9 @@ const FilterForm = ({
       {showSubCategories && (
         <CheckboxInput
           control={control}
-          label="SubCategories"
-          name="subCategories"
-          error={errors.subCategories?.message}
+          label="Subcategories"
+          name="subcategories"
+          error={errors.subcategories?.message}
           data={subCategories?.data ?? []}
           flexDirection="column"
         />
@@ -119,7 +105,6 @@ const FilterForm = ({
 
       {getBrandsError && <ErrorMessage error={getBrandsError} />}
       {getSubCategoriesError && <ErrorMessage error={getSubCategoriesError} />}
-      {/* {updateBrandError && <ErrorMessage error={updateBrandError} />}  */}
     </Form>
   );
 };
