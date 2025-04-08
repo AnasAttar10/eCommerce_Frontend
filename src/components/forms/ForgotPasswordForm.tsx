@@ -48,7 +48,7 @@ const ForgotPasswordForm = () => {
           register={register}
           error={errors.email?.message}
         />
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" disabled>
           {isLoading ? (
             <>
               <Spinner animation="border" size="sm"></Spinner> Loading ...
