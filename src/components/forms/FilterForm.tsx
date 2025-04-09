@@ -82,7 +82,7 @@ const FilterForm = ({
           <p>Price </p>
           <div
             style={{
-              width: '70px',
+              width: '120px',
             }}
           >
             <label>From </label>
