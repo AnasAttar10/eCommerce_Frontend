@@ -40,7 +40,7 @@ export type TChangeMyPasswordRequest = {
 
 export type TSignUpRequest = {
   name: string;
-  confirmPassword: string;
+  passwordConfirm: string;
   email: string;
   password: string;
 };

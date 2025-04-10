@@ -9,7 +9,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     signUp: builder.mutation<void, TSignUpRequest>({
       query: (body) => ({
-        url: '/auth/register',
+        url: '/auth/signup',
         method: 'post',
         body,
       }),

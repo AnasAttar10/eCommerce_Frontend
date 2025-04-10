@@ -1,4 +1,4 @@
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Spinner } from 'react-bootstrap';
 import { Input } from '@components/forms';
 import useCheckingEmail from '@hooks/useCheckingEmail';
 import { useSignUpMutation } from '@store/auth/authApi';
@@ -6,12 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signUpSchema, TSignUp } from '@validations/signUpSchema';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 
 const RegisterForm = () => {
   const navigate = useNavigate();
   const { enteredEmail, emailStatus, handleCheckingEmail, reset } =
     useCheckingEmail();
-  const [signUp] = useSignUpMutation();
+  const [signUp, { isLoading, error }] = useSignUpMutation();
   const {
     register,
     handleSubmit,
@@ -22,7 +23,7 @@ const RegisterForm = () => {
   const onSubmit: SubmitHandler<TSignUp> = async (data) => {
     signUp(data)
       .unwrap()
-      .then(() => navigate('/login?message=account_created'));
+      .then(() => navigate('/auth/login?message=account_created'));
   };
   const handleEmailOnBlue = async (e: React.FocusEvent<HTMLInputElement>) => {
     await trigger('email');
@@ -77,15 +78,25 @@ const RegisterForm = () => {
         error={errors.password?.message as string}
       />
       <Input
-        name="confirmPassword"
-        label="Confirm Password"
+        name="passwordConfirm"
+        label="password Confirm"
         type="password"
         register={register}
-        error={errors.confirmPassword?.message as string}
+        error={errors.passwordConfirm?.message as string}
       />
-      <Button variant="primary" type="submit">
+      {/* <Button variant="primary" type="submit">
         Register
+      </Button> */}
+      <Button variant="primary" type="submit">
+        {isLoading ? (
+          <>
+            <Spinner animation="border" size="sm"></Spinner> Loading ...
+          </>
+        ) : (
+          'Register'
+        )}
       </Button>
+      {error && <ErrorMessage error={error} />}
     </Form>
   );
 };
