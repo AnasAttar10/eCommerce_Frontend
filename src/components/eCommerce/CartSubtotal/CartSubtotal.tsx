@@ -8,6 +8,7 @@ import z from 'zod';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 import { TAddress } from '@types';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type TCartSubtotal = {
   hasDiscount: boolean;
@@ -36,7 +37,7 @@ const CartSubtotal = ({
   handleCheckout,
 }: TCartSubtotal) => {
   const { data, isLoading, error } = useGetLoggedUserAddressesQuery();
-
+  const navigate = useNavigate();
   const {
     control,
     watch,
@@ -65,11 +66,12 @@ const CartSubtotal = ({
       <hr />
       <div>
         <h4>Choose payment method</h4>
+
         <div>
           {!isLoading && (
             <SelectInput
               name="address"
-              label="Address"
+              label="Choose your address"
               control={control}
               options={
                 data?.data
@@ -82,6 +84,22 @@ const CartSubtotal = ({
               error={errors.address?.message}
               multiple={false}
             />
+          )}
+          {data?.data && data?.data.length <= 0 && (
+            <div style={{ margin: '10px 0' }}>
+              No address found. Please add your shipping address before
+              continuing.{' '}
+              <span
+                onClick={() => navigate('/profile/address')}
+                style={{
+                  textDecoration: 'underline',
+                  color: 'blue',
+                  cursor: 'pointer',
+                }}
+              >
+                Click here to add one
+              </span>
+            </div>
           )}
           {token && (
             <div

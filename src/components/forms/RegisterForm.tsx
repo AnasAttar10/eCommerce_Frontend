@@ -96,6 +96,19 @@ const RegisterForm = () => {
           'Register'
         )}
       </Button>
+      <div style={{ marginTop: '20px' }}>
+        Already have an account ?{' '}
+        <span
+          onClick={() => navigate('/auth/login')}
+          style={{
+            textDecoration: 'underline',
+            color: 'blue',
+            cursor: 'pointer',
+          }}
+        >
+          Login !
+        </span>
+      </div>
       {error && <ErrorMessage error={error} />}
     </Form>
   );

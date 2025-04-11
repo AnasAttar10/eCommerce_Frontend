@@ -6,10 +6,12 @@ import { signInSchema, TSignIn } from '@validations/signInSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 import ForgotPasswordLink from './ForgotPasswordLink/ForgotPasswordLink';
+import { useNavigate } from 'react-router-dom';
 type TLoginForm = {
   handleNavigate: (targetPath: string) => void;
 };
 const LoginForm = ({ handleNavigate }: TLoginForm) => {
+  const navigate = useNavigate();
   const [signIn, { isLoading, error }] = useSignInMutation();
   const {
     register,
@@ -48,6 +50,19 @@ const LoginForm = ({ handleNavigate }: TLoginForm) => {
             'Login'
           )}
         </Button>
+        <div style={{ marginTop: '20px' }}>
+          Don't have an account ?{' '}
+          <span
+            onClick={() => navigate('/auth/register')}
+            style={{
+              textDecoration: 'underline',
+              color: 'blue',
+              cursor: 'pointer',
+            }}
+          >
+            Register!
+          </span>
+        </div>
         {error && <ErrorMessage error={error} />}
       </Form>
     </div>

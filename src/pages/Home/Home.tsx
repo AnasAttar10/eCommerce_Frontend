@@ -1,7 +1,7 @@
 import { Button, Carousel, Container } from 'react-bootstrap';
-import Adv1 from '@assets/images/image.jpg';
+import Adv1 from '@assets/images/online-shopping.jpeg';
 import Adv2 from '@assets/images/image2.png';
-import Adv3 from '@assets/images/image3.jpg';
+import Adv3 from '@assets/images/tamanna-rumee-mIqyYpSNq3o-unsplash.jpg';
 import Adv4 from '@assets/images/image4.png';
 import Loading from '@components/feedback/Loading/Loading';
 import GridList from '@components/common/GridList/GridList';
@@ -35,17 +35,25 @@ const Home = () => {
     isLoading: getBrandsLoading,
     error: getBrandsError,
   } = useGetBrandsQuery(queryString);
+  const isSmallScreen = window.innerWidth <= 480;
+
   return (
     <div>
       <div className="slider-section mb-5">
         <Carousel interval={3000}>
           {advertisements.map((a, idx) => (
             <Carousel.Item key={idx}>
-              <div style={{ width: '100%', height: '100vh' }}>
+              <div
+                style={{
+                  width: '100%',
+                  height: isSmallScreen ? '60vh' : '100vh',
+                }}
+              >
                 <img
                   className="d-block w-100 h-100"
                   src={a}
                   alt={idx + 'slide'}
+                  // style={{ objectFit: 'cover' }}
                 />
               </div>
             </Carousel.Item>
