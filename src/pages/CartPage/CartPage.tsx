@@ -3,12 +3,7 @@ import { Heading } from '@components/common';
 import { CartItemList, CartSubtotal } from '@components/eCommerce';
 import Loading from '@components/feedback/Loading/Loading';
 import { LottieHandler } from '@components/feedback';
-import {
-  useClearCartMutation,
-  useGetLoggedUserCartQuery,
-  useUpdateCartItemQuantityMutation,
-} from '@store/cart/cartApi';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { useAppSelector } from '@store/hooks';
 import { useCallback, useEffect, useState } from 'react';
 import ModalB from '@components/feedback/Modal/ModalB';
 import ApplyCoupon from '@components/eCommerce/Coupon/ApplyCoupon';
@@ -17,34 +12,43 @@ import {
   useAddCashOrderMutation,
   useAddCheckoutSessionMutation,
 } from '@store/order/orderApi';
-import { TAddress } from '@types';
+import { TAddress, TCartItem } from '@types';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 import { loadStripe } from '@stripe/stripe-js';
 import useRemovingMessage from '@hooks/useRemovingMessage';
-// import {
-//   Elements,
-//   useStripe,
-//   useElements,
-//   CardElement,
-// } from '@stripe/react-stripe-js';
-// const STRIPE_KEY =
-//   'pk_test_51QjiXhISmsQsoRB1581rgF1olzsnZ2V1UvZzuVoqPDYUoffmng23UksaMLSjkAqEDFJJ6LxoChMKQNhHy5454O4d00bSeiepHd';
+import useCartItems from '@hooks/useCartItems';
+import { useNavigate } from 'react-router-dom';
+import { useGetLoggedUserAddressesQuery } from '@store/address/addressApi';
+
 const Cart = () => {
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
   const [selectedAddress, setSelectedAddress] = useState<TAddress | undefined>(
     undefined
   );
+  const [showAddressForm, setShowAddressForm] = useState(false);
   const { showRemovingMessage, setShowRemovingMessage, handleRemovingMessage } =
     useRemovingMessage();
-  const { user, token } = useAppSelector((state) => state.auth);
-
-  const dispatch = useAppDispatch();
+  const { token } = useAppSelector((state) => state.auth);
   const {
-    data: products,
-    isLoading: getProductsLoading,
-    error: getProductsError,
+    cartId,
+    cartItems,
+    numOfCartItems,
+    totalCartPrice,
+    hasDiscount,
+    getProductsError,
+    getProductsLoading,
+    handleClearCart,
+    clearCartLoading,
     refetch,
-  } = useGetLoggedUserCartQuery(undefined, { skip: user.role === 'admin' });
+  } = useCartItems();
+  const {
+    data: addresses,
+    isLoading: getAddressesLoading,
+    error: getAddressesError,
+  } = useGetLoggedUserAddressesQuery(undefined, {
+    skip: !token,
+  });
   const [
     addCashOrder,
     {
@@ -53,28 +57,34 @@ const Cart = () => {
       isSuccess: addCashOrderSuccess,
     },
   ] = useAddCashOrderMutation();
+
   const [addCheckoutSession, { error: checkoutError }] =
     useAddCheckoutSessionMutation();
-  const [updateCartItemQuantity, { isLoading: updateCartItemQuantityLoading }] =
-    useUpdateCartItemQuantityMutation();
-  const [clearCart, { isLoading: clearCartLoading }] = useClearCartMutation();
 
-  const handleClearCart = async () => {
-    await clearCart();
+  const handleShowAddressForm = (status: boolean) => {
+    setShowAddressForm(status);
   };
 
   const handleAddOrder = () => {
-    setShow(true);
+    if (!token) navigate('/auth/login');
+    if (token && !selectedAddress) handleShowAddressForm(true);
+    else {
+      setShow(true);
+    }
   };
+
   const handleCheckout = async () => {
-    if (products?.data && selectedAddress) {
+    if (!token) navigate('/auth/login');
+    if (token && !selectedAddress) handleShowAddressForm(true);
+    if (cartItems && selectedAddress && cartId) {
       try {
         const stripePromise = await loadStripe(
           import.meta.env.VITE_STRIPE_KEY as string
         );
         if (!stripePromise) throw new Error('Failed to initialize Stripe.');
+
         const response = await addCheckoutSession({
-          cartId: products?.data?._id,
+          cartId: cartId,
           shippingAddress: selectedAddress,
         }).unwrap();
 
@@ -90,10 +100,11 @@ const Cart = () => {
       }
     }
   };
+
   const handleSave = async () => {
-    if (products?.data && selectedAddress)
+    if (cartItems && selectedAddress && cartId)
       await addCashOrder({
-        cartId: products?.data?._id,
+        cartId: cartId,
         shippingAddress: selectedAddress,
       });
     setShow(false);
@@ -106,22 +117,23 @@ const Cart = () => {
   const getSelectedAddress = useCallback((address: TAddress) => {
     setSelectedAddress(address);
   }, []);
-  const handleOnRemove = async () => {
-    await handleClearCart();
+
+  const handleOnRemove = () => {
+    handleClearCart();
     setShowRemovingMessage(false);
   };
+
   useEffect(() => {
     if (addCashOrderSuccess) refetch();
   }, [refetch, addCashOrderSuccess]);
+
   return (
     <Container>
       <ModalB
         show={show}
         title={'Placing Order'}
         message={`Are you sure you want to place order with subTotal : ${
-          products?.data?.totalPriceAfterDiscount ??
-          products?.data?.totalCartPrice ??
-          0
+          totalCartPrice ?? 0
         }`}
         handleClose={() => setShow(false)}
         handleSave={handleSave}
@@ -134,7 +146,7 @@ const Cart = () => {
         handleSave={handleOnRemove}
       />
       <Row>
-        <Col md={products && products?.numOfCartItems > 0 ? 8 : 12}>
+        <Col md={numOfCartItems > 0 ? 8 : 12}>
           <div
             style={{
               display: 'flex',
@@ -143,7 +155,7 @@ const Cart = () => {
             }}
           >
             <Heading title="Cart" />
-            {products && products?.numOfCartItems > 0 && (
+            {numOfCartItems > 0 && (
               <Button
                 variant="secondary"
                 style={{ color: 'white', width: '200px' }}
@@ -165,12 +177,15 @@ const Cart = () => {
             error={getProductsError}
             type="cart"
           >
-            {clearCartLoading || (products && products.numOfCartItems > 0) ? (
+            {clearCartLoading || numOfCartItems > 0 ? (
               <CartItemList
-                dispatch={dispatch}
-                cartItems={products?.data.cartItems ?? []}
-                updateCartItemQuantity={updateCartItemQuantity}
-                updateCartItemQuantityLoading={updateCartItemQuantityLoading}
+                cartItems={
+                  Array.isArray(cartItems)
+                    ? cartItems.filter(
+                        (item): item is TCartItem => item !== undefined
+                      )
+                    : []
+                }
               />
             ) : addCashOrderSuccess ? (
               <LottieHandler
@@ -182,22 +197,22 @@ const Cart = () => {
             )}
           </Loading>
         </Col>
-        {products && !getProductsLoading && products?.numOfCartItems > 0 && (
+        {!getProductsLoading && numOfCartItems > 0 && (
           <Col md={4}>
             <ApplyCoupon handleRefetchData={handleRefetchData} />
             <CartSubtotal
-              hasDiscount={
-                products?.data?.totalPriceAfterDiscount ? true : false
-              }
-              subTotal={
-                products?.data?.totalPriceAfterDiscount ??
-                products?.data?.totalCartPrice ??
-                0
-              }
+              hasDiscount={hasDiscount}
+              subTotal={totalCartPrice ?? 0}
               token={token}
+              addresses={addresses?.data ?? []}
+              getAddressesLoading={getAddressesLoading}
+              getAddressesError={getAddressesError}
+              showAddressForm={showAddressForm}
+              handleShowAddressForm={handleShowAddressForm}
+              getSelectedAddress={getSelectedAddress}
+              // handleNumOfAddress={handleNumOfAddress}
               handleAddOrder={handleAddOrder}
               handleCheckout={handleCheckout}
-              getSelectedAddress={getSelectedAddress}
               addCashOrderLoading={addCashOrderLoading}
             />
           </Col>

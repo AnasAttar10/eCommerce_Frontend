@@ -1,23 +1,28 @@
-import { Button, Spinner } from 'react-bootstrap';
+import { Alert, Button, Spinner } from 'react-bootstrap';
 import styles from './styles.module.css';
 import SelectInput from '@components/forms/SelectInput/SelectInput';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useGetLoggedUserAddressesQuery } from '@store/address/addressApi';
 import z from 'zod';
-import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
-import { TAddress } from '@types';
+import { ErrorResponse, TAddress } from '@types';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import ModalB from '@components/feedback/Modal/ModalB';
+import AddressForm from '@components/forms/AddressForm';
+import Loading from '@components/feedback/Loading/Loading';
 
 type TCartSubtotal = {
   hasDiscount: boolean;
   subTotal: number;
   token: string;
   addCashOrderLoading: boolean;
+  addresses: TAddress[];
+  getAddressesLoading: boolean;
+  getAddressesError: ErrorResponse | undefined;
   getSelectedAddress: (address: TAddress) => void;
   handleAddOrder: () => void;
   handleCheckout: () => void;
+  showAddressForm: boolean;
+  handleShowAddressForm: (status: boolean) => void;
 };
 type TAddressForm = {
   address: string;
@@ -30,14 +35,17 @@ const addressSchema = z.object({
 const CartSubtotal = ({
   hasDiscount,
   subTotal,
-  token,
-  addCashOrderLoading,
+  // token,
   getSelectedAddress,
+  showAddressForm,
+  handleShowAddressForm,
+  addresses,
+  getAddressesLoading,
+  getAddressesError,
   handleAddOrder,
   handleCheckout,
+  addCashOrderLoading,
 }: TCartSubtotal) => {
-  const { data, isLoading, error } = useGetLoggedUserAddressesQuery();
-  const navigate = useNavigate();
   const {
     control,
     watch,
@@ -47,16 +55,28 @@ const CartSubtotal = ({
     resolver: zodResolver(addressSchema),
   });
   const selectedAddressId = watch();
-  const fullAddress = data?.data.find(
-    (ad) => ad._id === selectedAddressId.address
-  );
+  const fullAddress =
+    addresses.length == 1
+      ? addresses[0]
+      : addresses.find((ad) => ad._id === selectedAddressId.address);
 
   useEffect(() => {
     if (fullAddress) getSelectedAddress(fullAddress);
   }, [fullAddress, getSelectedAddress]);
 
+  useEffect(() => {
+    if (addresses.length > 0 && showAddressForm) handleShowAddressForm(false);
+  }, [addresses, showAddressForm, handleShowAddressForm]);
+
   return (
     <>
+      <ModalB
+        show={showAddressForm}
+        title={'add Address'}
+        message={<AddressForm />}
+        handleClose={() => handleShowAddressForm(false)}
+        showButtons={false}
+      />
       <div className={styles.container}>
         <span>{hasDiscount ? 'total Price After Discount' : 'Subtotal:'}</span>
         <h3>
@@ -64,79 +84,72 @@ const CartSubtotal = ({
         </h3>
       </div>
       <hr />
+
       <div>
         <h4>Choose payment method</h4>
-
+        <p></p>
         <div>
-          {!isLoading && (
-            <SelectInput
-              name="address"
-              label="Choose your address"
-              control={control}
-              options={
-                data?.data
-                  ? data?.data.map((s) => ({
-                      value: s._id,
-                      label: s.alias,
-                    }))
-                  : []
-              }
-              error={errors.address?.message}
-              multiple={false}
-            />
-          )}
-          {data?.data && data?.data.length <= 0 && (
-            <div style={{ margin: '10px 0' }}>
-              No address found. Please add your shipping address before
-              continuing.{' '}
-              <span
-                onClick={() => navigate('/profile/address')}
-                style={{
-                  textDecoration: 'underline',
-                  color: 'blue',
-                  cursor: 'pointer',
-                }}
-              >
-                Click here to add one
-              </span>
-            </div>
-          )}
-          {token && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '10px',
-                marginBottom: '60px',
-              }}
+          {addresses.length > 1 && (
+            <Loading
+              isLoading={getAddressesLoading}
+              error={getAddressesError}
+              type="table"
             >
-              {addCashOrderLoading ? (
-                <>
-                  <Spinner animation="border" size="sm"></Spinner> Loading ...
-                </>
-              ) : (
-                <Button
-                  variant="secondary"
-                  style={{ color: 'white' }}
-                  disabled={!fullAddress}
-                  onClick={handleAddOrder}
-                >
-                  Cash
-                </Button>
+              <SelectInput
+                name="address"
+                label="Choose your address"
+                control={control}
+                options={addresses.map((s) => ({
+                  value: s._id,
+                  label: s.alias,
+                }))}
+                error={errors.address?.message}
+                multiple={false}
+              />
+              {!fullAddress && (
+                <p style={{ fontSize: '12px', color: 'red' }}>
+                  please select your address
+                </p>
               )}
+            </Loading>
+          )}
+          {addresses.length == 1 && (
+            <Alert variant="success">
+              Address added successfully 🎉 You’re all set to complete your
+              order!
+            </Alert>
+          )}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '10px',
+              marginBottom: '60px',
+            }}
+          >
+            {addCashOrderLoading ? (
+              <>
+                <Spinner animation="border" size="sm"></Spinner> Loading ...
+              </>
+            ) : (
               <Button
                 variant="secondary"
                 style={{ color: 'white' }}
-                disabled={!fullAddress}
-                onClick={handleCheckout}
+                onClick={handleAddOrder}
               >
-                Credit Card
+                Cash
               </Button>
-            </div>
-          )}
+            )}
+            <Button
+              variant="secondary"
+              style={{ color: 'white' }}
+              onClick={handleCheckout}
+            >
+              Credit Card
+            </Button>
+          </div>
         </div>
       </div>
-      {error && <ErrorMessage error={error} />}
     </>
   );
 };

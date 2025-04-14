@@ -1,6 +1,5 @@
 import { TProduct } from '@types';
 import CartItem from '../CartItem/CartItem';
-import { AppDispatch } from '@store/index';
 type TCartItem = {
   _id: string;
   color: string;
@@ -15,25 +14,28 @@ export type TUpdateCartItemQuantity = (params: {
 }) => void;
 
 type TCartList = {
-  dispatch: AppDispatch;
   cartItems: TCartItem[];
-  updateCartItemQuantityLoading: boolean;
-  updateCartItemQuantity: TUpdateCartItemQuantity;
+  isAside?: boolean;
 };
 
-const CartItemList = ({ cartItems }: TCartList) => {
+const CartItemList = ({ cartItems, isAside = false }: TCartList) => {
   const productsInfo =
     cartItems &&
     cartItems?.map((p) => (
       <CartItem
-        key={p._id}
+        key={`${p._id}${p.color ? p.color : 'color'}`}
         _id={p._id}
         imageCover={p.product.imageCover}
         title={p.product.title}
         product_quantity={p.product.quantity || 0}
         color={p.color}
-        price={p.price}
+        price={
+          p.product.priceAfterDiscount && p.product.priceAfterDiscount > 0
+            ? p.product.priceAfterDiscount
+            : p.price
+        }
         quantity={p.quantity}
+        isAside={isAside}
       />
     ));
   return <div>{productsInfo}</div>;

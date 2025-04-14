@@ -26,16 +26,18 @@ const PaginationComponent = ({
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
       >
-        -
+        Prev
       </Button>
-      <span>{currentPage}</span>
+      <span>
+        {currentPage} /{numOfPages}{' '}
+      </span>
       <Button
-        variant="secondary"
+        variant="primary"
         size="sm"
         disabled={currentPage >= numOfPages}
         onClick={() => onPageChange(currentPage + 1)}
       >
-        +
+        Next
       </Button>
     </div>
   );

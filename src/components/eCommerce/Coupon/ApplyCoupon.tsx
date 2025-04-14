@@ -7,10 +7,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useApplyCouponMutation } from '@store/cart/cartApi';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 import { useEffect } from 'react';
+import { useAppSelector } from '@store/hooks';
+import { useNavigate } from 'react-router-dom';
 type TApplyCouponComponent = {
   handleRefetchData: () => void;
 };
 const ApplyCoupon = ({ handleRefetchData }: TApplyCouponComponent) => {
+  const { token } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
   const { applyCouponContainer, ButtonContainer } = style;
   const [applyCoupon, { isLoading, error, isSuccess }] =
     useApplyCouponMutation();
@@ -24,8 +28,10 @@ const ApplyCoupon = ({ handleRefetchData }: TApplyCouponComponent) => {
     resolver: zodResolver(applyCouponSchema),
   });
   const submit: SubmitHandler<TApplyCoupon> = async (data) => {
-    await applyCoupon(data);
-    reset();
+    if (token) {
+      await applyCoupon(data);
+      reset();
+    } else navigate('/auth/login');
   };
   useEffect(() => {
     if (isSuccess) handleRefetchData();

@@ -2,14 +2,28 @@ import { Container } from 'react-bootstrap';
 import styles from './styles.module.css';
 import { Footer, Header } from '@components/common';
 import { Outlet } from 'react-router-dom';
+import Aside from '@components/common/Aside/Aside';
+import { useLocation } from 'react-router-dom';
 const { container, wrapper } = styles;
 const MainLayout = () => {
+  const isSmallScreen = window.innerWidth <= 767;
+  const location = useLocation();
+  const shouldHideAside =
+    location.pathname.startsWith('/categories/products') ||
+    location.pathname.startsWith('/products') ||
+    location.pathname.startsWith('/categories');
   return (
     <Container className={container}>
       <Header />
-      <div className={wrapper}>
-        <Outlet />
+      <div style={{ display: 'flex' }}>
+        <main style={{ flex: '1' }}>
+          <div className={wrapper}>
+            <Outlet />
+          </div>
+        </main>
+        {shouldHideAside && !isSmallScreen && <Aside />}
       </div>
+
       <Footer />
     </Container>
   );

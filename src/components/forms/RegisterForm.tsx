@@ -84,9 +84,6 @@ const RegisterForm = () => {
         register={register}
         error={errors.passwordConfirm?.message as string}
       />
-      {/* <Button variant="primary" type="submit">
-        Register
-      </Button> */}
       <Button variant="primary" type="submit">
         {isLoading ? (
           <>

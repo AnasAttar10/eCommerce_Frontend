@@ -9,7 +9,7 @@ import Input from './Input/Input';
 import { memo, useEffect } from 'react';
 import { MdArrowBack } from 'react-icons/md';
 type TAddressForm = {
-  handleShowForm: (status: boolean) => void;
+  handleShowForm?: (status: boolean) => void;
 };
 const AddressForm = memo(({ handleShowForm }: TAddressForm) => {
   const [
@@ -31,7 +31,7 @@ const AddressForm = memo(({ handleShowForm }: TAddressForm) => {
     await addAddress(data);
   };
   useEffect(() => {
-    if (isSuccess) handleShowForm(false);
+    if (isSuccess && handleShowForm) handleShowForm(false);
   }, [isSuccess, handleShowForm]);
   return (
     <div>
@@ -41,17 +41,19 @@ const AddressForm = memo(({ handleShowForm }: TAddressForm) => {
           padding: '10px',
         }}
       >
-        <div
-          style={{
-            cursor: 'pointer',
-            position: 'absolute',
-            top: '5px',
-            right: '10px',
-          }}
-          onClick={() => handleShowForm(false)}
-        >
-          <MdArrowBack size={20} />
-        </div>
+        {handleShowForm && (
+          <div
+            style={{
+              cursor: 'pointer',
+              position: 'absolute',
+              top: '5px',
+              right: '10px',
+            }}
+            onClick={() => handleShowForm(false)}
+          >
+            <MdArrowBack size={20} />
+          </div>
+        )}
       </div>
       <Form onSubmit={handleSubmit(submit)} className="col-xs-12 col-md-6">
         <Input

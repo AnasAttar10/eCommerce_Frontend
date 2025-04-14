@@ -41,10 +41,18 @@ const ProductPage = () => {
     undefined
   );
   const [showAllDescription, setShowAllDescription] = useState(false);
-  // const [minLength, setMinLength] = useState(230);
   const { data, isLoading, error } = useGetProductQuery(id as string, {
     skip: !id,
   });
+  let isSelectColor;
+  if (data?.data?.colors && data?.data?.colors?.length > 0) {
+    if (data?.data?.colors?.length == 1) {
+      isSelectColor = true;
+    }
+    if (currentColor) isSelectColor = true;
+    else isSelectColor = false;
+  } else isSelectColor = true;
+
   const quantity = data?.data.quantity || 0;
   const isMax = quantity <= 0;
   const [addProductToCart, { isLoading: addProductToCartLoading }] =
@@ -78,6 +86,12 @@ const ProductPage = () => {
       if (myReview) setMyReview(myReview);
     }
   }, [records, user._id, setMyReview]);
+
+  useEffect(() => {
+    if (!currentColor && data?.data?.colors?.length == 1) {
+      setCurrentColor(data?.data?.colors[0]);
+    }
+  }, [data?.data?.colors, currentColor]);
 
   useEffect(() => {
     if (myReview && !recordId) setShowForm(false);
@@ -200,13 +214,7 @@ const ProductPage = () => {
                   variant="info"
                   style={{ color: 'white', width: '100%' }}
                   onClick={() => handleAddToCar()}
-                  disabled={
-                    addProductToCartLoading ||
-                    isMax ||
-                    (data?.data.colors &&
-                      data?.data.colors?.length > 0 &&
-                      !currentColor)
-                  }
+                  disabled={addProductToCartLoading || isMax || !isSelectColor}
                 >
                   {addProductToCartLoading ? (
                     <>
@@ -216,6 +224,11 @@ const ProductPage = () => {
                     'Add to cart'
                   )}
                 </Button>
+              )}
+              {!isSelectColor && (
+                <p style={{ color: 'red', margin: '10px 0' }}>
+                  Please choose your preferred color.{' '}
+                </p>
               )}
             </div>
           </Col>

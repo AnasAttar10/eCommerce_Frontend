@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { TCartResponse } from '@types';
+import { TCartItem, TCartResponse } from '@types';
 import { baseQueryWithToken } from '@store/baseQuery';
 
 export const cartApi = createApi({
@@ -14,9 +14,20 @@ export const cartApi = createApi({
       }),
       providesTags: ['cart'],
     }),
+    syncCartAfterLogin: builder.mutation<
+      TCartResponse,
+      { cartItems: TCartItem[] }
+    >({
+      query: (cartItems) => ({
+        url: `/cart/sync`,
+        method: 'post',
+        body: cartItems,
+      }),
+      invalidatesTags: ['cart'],
+    }),
     addProductToCart: builder.mutation<
       TCartResponse,
-      { productId: string; color: string | undefined }
+      { productId: string; color: string | undefined; quantity?: number }
     >({
       query: (body) => ({
         url: `/cart`,
@@ -62,6 +73,7 @@ export const cartApi = createApi({
 
 export const {
   useGetLoggedUserCartQuery,
+  useSyncCartAfterLoginMutation,
   useAddProductToCartMutation,
   useUpdateCartItemQuantityMutation,
   useRemoveSpecificCartItemMutation,

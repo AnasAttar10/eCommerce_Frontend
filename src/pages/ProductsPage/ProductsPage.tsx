@@ -16,7 +16,6 @@ import SearchInput from '@components/forms/SearchInput/SearchInput';
 const limit = 10;
 const Products = () => {
   const { user } = useAppSelector((state) => state.auth);
-
   const { prefix } = useParams();
   const { searchValue, handleOnSearch } = useSearchInput();
   const {
@@ -27,17 +26,6 @@ const Products = () => {
     stringQueryResult,
     isSendRequest,
   } = useQueryString(limit, prefix, searchValue);
-
-  // const [prevQueryString, setPrevQueryString] = useState(stringQueryResult);
-
-  // useEffect(() => {
-  //   const interval = setTimeout(() => {
-  //     if (stringQueryResult !== prevQueryString) {
-  //       setPrevQueryString(stringQueryResult);
-  //     }
-  //     return () => clearTimeout(interval);
-  //   }, 2000);
-  // }, [stringQueryResult, prevQueryString]);
 
   const {
     error,
@@ -62,9 +50,9 @@ const Products = () => {
   return (
     <Container>
       <Row>
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between flex-wrap">
           <Heading title={`Products`} />
-          <div>
+          <div className="m-2">
             <SearchInput handleOnSearch={handleOnSearch} />
           </div>
 
@@ -74,7 +62,7 @@ const Products = () => {
         </div>
       </Row>
       <Row>
-        <Col xs={12} sm={12} md={12} lg={2} className="mb-5">
+        <Col xs={12} sm={12} md={12} lg={3} xl={2} className="mb-5">
           <FilterForm
             categoryId={categoryId ?? ''}
             handleFilterFormChange={handleFilterFormChange}
@@ -83,7 +71,7 @@ const Products = () => {
             showPrice
           />
         </Col>
-        <Col xs={12} sm={12} md={12} lg={10}>
+        <Col xs={12} sm={12} md={12} lg={9} xl={10}>
           <Loading
             isLoading={productsLoading || wishlistLoading}
             error={error}

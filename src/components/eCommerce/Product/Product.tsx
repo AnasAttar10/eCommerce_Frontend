@@ -10,7 +10,6 @@ import {
   useRemoveFromWishlistMutation,
   wishlistApi,
 } from '@store/wishlist/wishlistApi';
-import { useAddProductToCartMutation } from '@store/cart/cartApi';
 import { FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 import { useRemoveProductMutation } from '@store/Product/productsApi';
@@ -18,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { MdAddShoppingCart } from 'react-icons/md';
 import ModalB from '@components/feedback/Modal/ModalB';
 import useRemovingMessage from '@hooks/useRemovingMessage';
+import useCartItems from '@hooks/useCartItems';
 const {
   product,
   productImg,
@@ -42,7 +42,7 @@ const Product = memo(
     quantity,
     showQuantity = false,
     showEditAndRemoveIcons = false,
-    showColors = false,
+    showColors = true,
     handleEdit,
   }: TProduct & {
     showLikeIcon?: boolean;
@@ -65,18 +65,33 @@ const Product = memo(
     ] = useRemoveProductMutation();
     const dispatch = useAppDispatch();
     const isMax = quantity <= 0;
+
     const [addToWishlist, { isLoading: isAddToWishlistLoading }] =
       useAddToWishlistMutation();
-    const [addProductToCart, { isLoading: addProductToCartLoading }] =
-      useAddProductToCartMutation();
+    // const [addProductToCart, { isLoading: addProductToCartLoading }] =
+    //   useAddProductToCartMutation();
+    const { handleAddToCar, addProductToCartLoading } = useCartItems();
     const [removeFromWishlist, { isLoading: isRemoveFromWishlistLoading }] =
       useRemoveFromWishlistMutation();
 
     const [currentColor, setCurrentColor] = useState<string | undefined>(
       undefined
     );
-    const handleAddToCar = async () => {
-      await addProductToCart({ productId: _id, color: currentColor });
+    let isSelectColor;
+    if (colors && colors?.length > 0) {
+      if (colors?.length == 1) {
+        isSelectColor = true;
+      }
+      if (currentColor) isSelectColor = true;
+      else isSelectColor = false;
+    } else isSelectColor = true;
+    const handleSelectColor = (
+      e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+      color: string
+    ) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setCurrentColor(color);
     };
     const handleLikeToggle = async () => {
       if (isAddToWishlistLoading || isRemoveFromWishlistLoading) return;
@@ -148,19 +163,6 @@ const Product = memo(
             <img src={imageCover} alt={title} loading="lazy" />
           </div>
           <h2 title={title}>{title}</h2>
-          {showColors && colors && colors?.length > 0 && (
-            <div className={colorContainer}>
-              colors:
-              {colors?.map((color) => (
-                <span
-                  key={Math.random()}
-                  className={`${colorWrapper} ${color === currentColor ? activeColor : ''}`}
-                  style={{ backgroundColor: color }}
-                  onClick={() => setCurrentColor(color)}
-                ></span>
-              ))}
-            </div>
-          )}
           <div style={{ display: 'flex', gap: '5px' }}>
             {Number(priceAfterDiscount) > 1 && (
               <h3>
@@ -183,6 +185,24 @@ const Product = memo(
               </h3>
             )}
           </div>
+          {showColors && colors && colors?.length > 0 && (
+            <div className={colorContainer}>
+              colors:
+              {colors?.map((color) => (
+                <span
+                  key={Math.random()}
+                  className={`${colorWrapper} ${color === currentColor ? activeColor : ''}`}
+                  style={{ backgroundColor: color }}
+                  onClick={(e) => handleSelectColor(e, color)}
+                ></span>
+              ))}
+              {!isSelectColor && (
+                <p style={{ color: 'red', fontSize: '10px' }}>
+                  Please choose your preferred color.{' '}
+                </p>
+              )}
+            </div>
+          )}
 
           {showQuantity && (
             <>
@@ -200,7 +220,7 @@ const Product = memo(
           <Button
             variant="info"
             style={{ color: 'white' }}
-            onClick={handleAddToCar}
+            onClick={() => handleAddToCar(_id, currentColor)}
             disabled={addProductToCartLoading || isMax}
           >
             {addProductToCartLoading ? (

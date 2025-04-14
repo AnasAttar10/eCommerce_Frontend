@@ -55,6 +55,7 @@ const FilterForm = ({
       style={{
         boxShadow: 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px',
         padding: '10px 0',
+        minWidth: '150px',
       }}
     >
       {showBrands && (

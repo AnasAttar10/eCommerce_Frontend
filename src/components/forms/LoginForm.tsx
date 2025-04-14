@@ -7,22 +7,39 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 import ForgotPasswordLink from './ForgotPasswordLink/ForgotPasswordLink';
 import { useNavigate } from 'react-router-dom';
+import useCartItems from '@hooks/useCartItems';
+import { useSyncCartAfterLoginMutation } from '@store/cart/cartApi';
+import { useAppDispatch } from '@store/hooks';
+import { clearCartInStorage } from '@store/cart/cartSlice';
 type TLoginForm = {
   handleNavigate: (targetPath: string) => void;
 };
 const LoginForm = ({ handleNavigate }: TLoginForm) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { cartItems: cartItemsFromStorage } = useCartItems();
   const [signIn, { isLoading, error }] = useSignInMutation();
+  const [syncCartAfterLogin] = useSyncCartAfterLoginMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<TSignIn>({ mode: 'onBlur', resolver: zodResolver(signInSchema) });
   const submit: SubmitHandler<TSignIn> = async (data) => {
-    // if (searchParams.get('message')) setSearchParams('');
-    signIn(data)
-      .unwrap()
-      .then(() => handleNavigate('/'));
+    try {
+      await signIn(data).unwrap();
+      if (cartItemsFromStorage && cartItemsFromStorage.length > 0) {
+        const validItems = cartItemsFromStorage.filter(
+          (item) => item !== undefined
+        );
+        await syncCartAfterLogin({ cartItems: validItems });
+        dispatch(clearCartInStorage());
+
+        handleNavigate('/');
+      }
+    } catch (err) {
+      console.log('Sign in failed:', err);
+    }
   };
   return (
     <div>
