@@ -18,6 +18,7 @@ import { wishlistApi } from './wishlist/wishlistApi';
 import { authApi } from './auth/authApi';
 import authSlice from './auth/authSlice';
 import cartSlice from './cart/cartSlice';
+import searchSlice from './searchProduct/searchSlice';
 import { orderApi } from './order/orderApi';
 import { userApi } from './user/userApi';
 import { addressApi } from './address/addressApi';
@@ -44,6 +45,7 @@ const cartConfigReducer = {
 const rootReducer = combineReducers({
   auth: persistReducer(authConfigReducer, authSlice),
   cart: persistReducer(cartConfigReducer, cartSlice),
+  search: persistReducer(cartConfigReducer, searchSlice),
   [userApi.reducerPath]: userApi.reducer,
   [addressApi.reducerPath]: addressApi.reducer,
   [cartApi.reducerPath]: cartApi.reducer,

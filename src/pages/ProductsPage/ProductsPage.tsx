@@ -11,13 +11,11 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import SortBy from './SortBy';
 import useQueryString from '@hooks/useProductsQueryString';
-import useSearchInput from '@hooks/useSearchInput';
-import SearchInput from '@components/forms/SearchInput/SearchInput';
 const limit = 10;
 const Products = () => {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, token } = useAppSelector((state) => state.auth);
+  const { productName } = useAppSelector((state) => state.search);
   const { prefix } = useParams();
-  const { searchValue, handleOnSearch } = useSearchInput();
   const {
     handlePageChange,
     handleSelect,
@@ -25,20 +23,22 @@ const Products = () => {
     currentPage,
     stringQueryResult,
     isSendRequest,
-  } = useQueryString(limit, prefix, searchValue);
+  } = useQueryString(limit, prefix, productName);
 
   const {
     error,
     isLoading: productsLoading,
     data: products,
   } = useGetProductsQuery(stringQueryResult, {
-    skip: searchValue ? isSendRequest : false,
+    skip: productName ? isSendRequest : false,
   });
 
-  const categoryId = products?.data[0]?.category;
+  const categoryId = prefix ? products?.data[0]?.category : undefined;
 
   const { data: wishlistItems, isLoading: wishlistLoading } =
-    useGetWishlistItemsQuery(undefined, { skip: user.role === 'admin' });
+    useGetWishlistItemsQuery(undefined, {
+      skip: user.role === 'admin' || !token,
+    });
 
   const wishlistProductsArr = wishlistItems?.data?.map((wi) => wi._id);
 
@@ -50,12 +50,8 @@ const Products = () => {
   return (
     <Container>
       <Row>
-        <div className="d-flex justify-content-between flex-wrap">
+        <div className="d-flex flex-wrap flex-column flex-md-row justify-content-between gap-2">
           <Heading title={`Products`} />
-          <div className="m-2">
-            <SearchInput handleOnSearch={handleOnSearch} />
-          </div>
-
           <div>
             <SortBy handleSelect={handleSelect} />
           </div>
@@ -67,7 +63,7 @@ const Products = () => {
             categoryId={categoryId ?? ''}
             handleFilterFormChange={handleFilterFormChange}
             showBrands
-            showSubCategories
+            showSubCategories={prefix ? true : false}
             showPrice
           />
         </Col>
@@ -80,6 +76,9 @@ const Products = () => {
             <GridList
               emptyMessage={'There Are No Products'}
               records={productsWithLike ? productsWithLike : []}
+              xl={6}
+              lg={6}
+              xxl={4}
               renderRecord={(record) => (
                 <Product
                   {...record}

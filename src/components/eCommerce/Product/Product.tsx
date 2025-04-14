@@ -68,8 +68,6 @@ const Product = memo(
 
     const [addToWishlist, { isLoading: isAddToWishlistLoading }] =
       useAddToWishlistMutation();
-    // const [addProductToCart, { isLoading: addProductToCartLoading }] =
-    //   useAddProductToCartMutation();
     const { handleAddToCar, addProductToCartLoading } = useCartItems();
     const [removeFromWishlist, { isLoading: isRemoveFromWishlistLoading }] =
       useRemoveFromWishlistMutation();

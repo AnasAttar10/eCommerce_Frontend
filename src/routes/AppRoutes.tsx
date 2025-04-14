@@ -81,72 +81,58 @@ const routes = createBrowserRouter([
       {
         path: '/wishlist',
         element: (
-          // <ProtectedRoutes>
           <MySuspense>
             <Wishlist />
           </MySuspense>
-          // </ProtectedRoutes>
         ),
       },
       {
         path: '/cart',
         element: (
-          // <ProtectedRoutes>
           <MySuspense>
             <Cart />
           </MySuspense>
-          // </ProtectedRoutes>
         ),
       },
       {
         path: 'categories/products/:prefix',
-        // path: '/products',
+
         element: (
-          // <ProtectedRoutes>
           <MySuspense>
             <Products />
           </MySuspense>
-          // </ProtectedRoutes>
         ),
       },
       {
         path: 'products',
         element: (
-          // <ProtectedRoutes>
           <MySuspense>
             <Products />
           </MySuspense>
-          // </ProtectedRoutes>
         ),
       },
       {
         path: 'categories',
         element: (
-          // <ProtectedRoutes>
           <MySuspense>
             <CategoriesPage />
           </MySuspense>
-          // </ProtectedRoutes>
         ),
       },
       {
         path: 'brands',
         element: (
-          // <ProtectedRoutes>
           <MySuspense>
             <BrandsPage />
           </MySuspense>
-          // </ProtectedRoutes>
         ),
       },
       {
         path: '/product/:id',
         element: (
-          // <ProtectedRoutes>
           <MySuspense>
             <ProductPage />
           </MySuspense>
-          // </ProtectedRoutes>
         ),
       },
       {

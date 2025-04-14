@@ -13,7 +13,6 @@ import Loading from '@components/feedback/Loading/Loading';
 type TCartSubtotal = {
   hasDiscount: boolean;
   subTotal: number;
-  token: string;
   addCashOrderLoading: boolean;
   addresses: TAddress[];
   getAddressesLoading: boolean;
@@ -35,7 +34,6 @@ const addressSchema = z.object({
 const CartSubtotal = ({
   hasDiscount,
   subTotal,
-  // token,
   getSelectedAddress,
   showAddressForm,
   handleShowAddressForm,

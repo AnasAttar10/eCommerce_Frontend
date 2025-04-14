@@ -13,6 +13,7 @@ import Brand from '@components/eCommerce/Brand/Brand';
 import { Link } from 'react-router-dom';
 const advertisements = [Adv1, Adv2, Adv3, Adv4];
 const queryString = '?page=1&limit=4';
+const queryStringForBestRatingsAverage = '?page=1&limit=4&sort=ratingsAverage';
 const queryStringForBestSelling = '?page=1&limit=4&sort=-sold';
 const Home = () => {
   const {
@@ -24,7 +25,7 @@ const Home = () => {
     data: products,
     isLoading: getProductsLoading,
     error: getProductsError,
-  } = useGetProductsQuery(queryString);
+  } = useGetProductsQuery(queryStringForBestRatingsAverage);
   const {
     data: productsB,
     isLoading: getProductsLoadingB,
@@ -53,7 +54,6 @@ const Home = () => {
                   className="d-block w-100 h-100"
                   src={a}
                   alt={idx + 'slide'}
-                  // style={{ objectFit: 'cover' }}
                 />
               </div>
             </Carousel.Item>
@@ -101,7 +101,12 @@ const Home = () => {
             emptyMessage={'There Are No Categories'}
             records={products ? products.data : []}
             renderRecord={(record) => (
-              <Product {...record} showButton={false} showLikeIcon={false} />
+              <Product
+                {...record}
+                showButton={false}
+                showLikeIcon={false}
+                showColors={false}
+              />
             )}
           />
         </Loading>
@@ -126,7 +131,12 @@ const Home = () => {
             emptyMessage={'There Are No Categories'}
             records={productsB ? productsB.data : []}
             renderRecord={(record) => (
-              <Product {...record} showButton={false} showLikeIcon={false} />
+              <Product
+                {...record}
+                showButton={false}
+                showLikeIcon={false}
+                showColors={false}
+              />
             )}
           />
         </Loading>

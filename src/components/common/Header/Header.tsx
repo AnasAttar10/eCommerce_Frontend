@@ -13,7 +13,7 @@ const Header = () => {
         <h1 className={headerLogo}>
           <span>Q</span> <Badge>Shop</Badge>
         </h1>
-        {user.role === 'user' && <HeaderLeftBar />}
+        {user.role !== 'admin' && <HeaderLeftBar />}
       </div>
       <MainNavbar />
     </header>

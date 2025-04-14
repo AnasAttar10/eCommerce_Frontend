@@ -9,7 +9,7 @@ const Error = () => {
     <Container className={wrapper}>
       <LottieHandler type="notFound" />
       <Link replace={true} to={'/'}>
-        How about go back safty ?
+        How about go back safety ?
       </Link>
     </Container>
   );

@@ -53,8 +53,8 @@ const useQueryString = (
         if (stringQueryResult !== prevQueryString) {
           setPrevQueryString(stringQueryResult);
         }
-        return () => clearTimeout(interval);
       }, 1000);
+      return () => clearTimeout(interval);
     }
   }, [stringQueryResult, prevQueryString, searchValue, orderEmail]);
   const isSendRequest = stringQueryResult !== prevQueryString;

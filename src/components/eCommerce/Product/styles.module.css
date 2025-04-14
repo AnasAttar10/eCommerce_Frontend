@@ -64,6 +64,7 @@
   justify-content: left;
   flex-wrap: wrap;
   gap: 10px;
+  margin: 5px 0;
 }
 .colorWrapper {
   width: 20px;

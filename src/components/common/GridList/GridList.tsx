@@ -10,6 +10,7 @@ type IGridLis<T> = {
   md?: number;
   lg?: number;
   xl?: number;
+  xxl?: number;
 };
 type IHasId = {
   _id: string;
@@ -23,6 +24,7 @@ const GridList = <T extends IHasId>({
   md = 6,
   lg = 4,
   xl = 3,
+  xxl = 3,
 }: IGridLis<T>) => {
   const recordsList =
     records.length > 0 &&
@@ -33,6 +35,7 @@ const GridList = <T extends IHasId>({
         md={md}
         lg={lg}
         xl={xl}
+        xxl={xxl}
         key={r._id}
         className="d-flex justify-content-center mb-5 mt-2"
       >

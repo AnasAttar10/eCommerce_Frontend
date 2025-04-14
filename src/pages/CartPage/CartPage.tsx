@@ -203,14 +203,12 @@ const Cart = () => {
             <CartSubtotal
               hasDiscount={hasDiscount}
               subTotal={totalCartPrice ?? 0}
-              token={token}
               addresses={addresses?.data ?? []}
               getAddressesLoading={getAddressesLoading}
               getAddressesError={getAddressesError}
               showAddressForm={showAddressForm}
               handleShowAddressForm={handleShowAddressForm}
               getSelectedAddress={getSelectedAddress}
-              // handleNumOfAddress={handleNumOfAddress}
               handleAddOrder={handleAddOrder}
               handleCheckout={handleCheckout}
               addCashOrderLoading={addCashOrderLoading}

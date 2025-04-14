@@ -29,7 +29,7 @@ const PaginationComponent = ({
         Prev
       </Button>
       <span>
-        {currentPage} /{numOfPages}{' '}
+        {currentPage} /{numOfPages == 0 ? 1 : numOfPages}
       </span>
       <Button
         variant="primary"
