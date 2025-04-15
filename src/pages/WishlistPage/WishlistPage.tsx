@@ -2,19 +2,12 @@ import { Heading } from '@components/common';
 import GridList from '@components/common/GridList/GridList';
 import { Product } from '@components/eCommerce';
 import Loading from '@components/feedback/Loading/Loading';
-import { useAppSelector } from '@store/hooks';
-import { useGetWishlistItemsQuery } from '@store/wishlist/wishlistApi';
+import useWishlistItems from '@hooks/useWishlistItems';
 import { Container } from 'react-bootstrap';
 
 const Wishlist = () => {
-  const { user, token } = useAppSelector((state) => state.auth);
-  const {
-    data: wishlistItems = { status: '', results: 0, data: [] },
-    isLoading: wishlistLoading,
-    error: wishlistError,
-  } = useGetWishlistItemsQuery(undefined, {
-    skip: user.role === 'admin' || !token,
-  });
+  const { wishlistItems, getWishlistLoading, getWishlistError } =
+    useWishlistItems();
   const productsWithLike = wishlistItems?.data?.map((p) => ({
     ...p,
     isLiked: true,
@@ -23,7 +16,11 @@ const Wishlist = () => {
   return (
     <Container>
       <Heading title="Wishlist" />
-      <Loading isLoading={wishlistLoading} error={wishlistError} type="product">
+      <Loading
+        isLoading={getWishlistLoading}
+        error={getWishlistError}
+        type="product"
+      >
         <GridList
           emptyMessage={'Your wishlist is empty'}
           records={productsWithLike ? productsWithLike : []}

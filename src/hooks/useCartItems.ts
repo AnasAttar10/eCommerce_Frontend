@@ -65,12 +65,13 @@ const useCartItems = () => {
       };
   });
 
-  const totalCartPrice = cartItems.reduce(
-    (sum, c) => sum + (c?.price as number) * (c?.quantity as number),
-    0
-  );
+  const totalCartPrice = cartItems.reduce((sum, c) => {
+    const price = typeof c?.price === 'number' ? c.price : 0;
+    const quantity = typeof c?.quantity === 'number' ? c.quantity : 0;
+    return sum + price * quantity;
+  }, 0);
 
-  const handleAddToCar = async (_id: string, color?: string) => {
+  const handleAddToCart = async (_id: string, color?: string) => {
     if (token)
       await addProductToCart({ productId: _id, color: color }).unwrap();
     else dispatch(addToCart({ productId: _id, color: color }));
@@ -146,16 +147,16 @@ const useCartItems = () => {
     totalCartPrice:
       products?.data?.totalPriceAfterDiscount ??
       products?.data?.totalCartPrice ??
-      totalCartPrice,
+      (totalCartPrice || 0),
     hasDiscount: Boolean(products?.data?.totalPriceAfterDiscount),
-    numOfCartItems: products?.numOfCartItems ?? numOfCartItems,
+    numOfCartItems: products?.numOfCartItems ?? numOfCartItems ?? 0,
     getProductsLoading: getProductsLoading ?? getProductsInStorageLoading,
     addProductToCartLoading,
     updateCartItemQuantityLoading,
     removeSpecificCartItemLoading,
     clearCartLoading,
     getProductsError: getProductsError ?? getProductsInStorageError,
-    handleAddToCar,
+    handleAddToCart,
     changeQuantity,
     removeItemHandler,
     handleClearCart,

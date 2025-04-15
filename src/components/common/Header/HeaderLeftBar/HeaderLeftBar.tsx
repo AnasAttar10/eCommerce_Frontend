@@ -2,22 +2,15 @@ import HeaderCounter from '../HeaderCounter/HeaderCounter';
 import CartLogo from '@assets/svg/cart.svg?react';
 import WishlistLogo from '@assets/svg/wishlist.svg?react';
 import styles from './styles.module.css';
-import { useGetWishlistItemsQuery } from '@store/wishlist/wishlistApi';
 import { memo } from 'react';
-import { useGetLoggedUserCartQuery } from '@store/cart/cartApi';
-import { useAppSelector } from '@store/hooks';
+import useCartItems from '@hooks/useCartItems';
+import useWishlistItems from '@hooks/useWishlistItems';
 const { headerLeftBar } = styles;
 const HeaderLeftBar = memo(() => {
-  const { user } = useAppSelector((state) => state.auth);
-
-  const { data: wishlistItems } = useGetWishlistItemsQuery(undefined, {
-    skip: !user.email || user.role === 'admin',
-  });
-  const { data: cartItems } = useGetLoggedUserCartQuery(undefined, {
-    skip: !user.email || user.role === 'admin',
-  });
-  const wishlistTotalquantities = wishlistItems?.results || 0;
-  const cartTotalquantities = cartItems?.numOfCartItems || 0;
+  const { numOfCartItems } = useCartItems();
+  const { numOfWishlistItems } = useWishlistItems();
+  const wishlistTotalquantities = numOfWishlistItems || 0;
+  const cartTotalquantities = numOfCartItems || 0;
 
   return (
     <div className={headerLeftBar}>

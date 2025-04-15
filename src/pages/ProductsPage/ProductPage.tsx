@@ -3,7 +3,6 @@ import { useGetProductQuery } from '@store/Product/productsApi';
 import { Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import styles from './styles.module.css';
-import { useAddProductToCartMutation } from '@store/cart/cartApi';
 import { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '@store/hooks';
 import ReviewForm from '@components/forms/ReviewForm';
@@ -16,6 +15,11 @@ import { Heading } from '@components/common';
 import useQueryString from '@hooks/useProductsQueryString';
 import { FaStar } from 'react-icons/fa6';
 import PaginationComponent from '@components/common/PaginationComponent/PaginationComponent';
+import { MdAddShoppingCart } from 'react-icons/md';
+import useCartItems from '@hooks/useCartItems';
+import useWishlistItems from '@hooks/useWishlistItems';
+import LikeFill from '@assets/svg/like-fill.svg?react';
+import Like from '@assets/svg/like.svg?react';
 const {
   imagesContainer,
   imageCoverWrapper,
@@ -27,8 +31,8 @@ const {
   descriptionWrapper,
   descriptionWrapperFull,
   showBtn,
-  reviewsContainer,
   myReviewWrapper,
+  wishlistBtn,
 } = styles;
 const limit = 5;
 const ProductPage = () => {
@@ -55,13 +59,19 @@ const ProductPage = () => {
 
   const quantity = data?.data.quantity || 0;
   const isMax = quantity <= 0;
-  const [addProductToCart, { isLoading: addProductToCartLoading }] =
-    useAddProductToCartMutation();
+  const { handleAddToCart, addProductToCartLoading } = useCartItems();
+  const {
+    checkIfTheProductInWishlist,
+    handleLikeToggle,
+    addProductToWishlistLoading,
+    removeFromWishlistLoading,
+  } = useWishlistItems();
   const { handlePageChange, currentPage, stringQueryResult } = useQueryString(
     limit,
     undefined
   );
 
+  const isLiked = checkIfTheProductInWishlist(data?.data?._id as string);
   const {
     data: records,
     isLoading: getReviewsLoading,
@@ -72,9 +82,6 @@ const ProductPage = () => {
       skip: !id,
     }
   );
-  const handleAddToCar = async () => {
-    if (id) await addProductToCart({ productId: id, color: currentColor });
-  };
 
   const handleCloseForm = () => {
     setShowForm(false);
@@ -112,7 +119,7 @@ const ProductPage = () => {
     <Container>
       <Loading isLoading={isLoading} error={error} type="productPage">
         <Row>
-          <Col md={6} className="mb-3 mt-3">
+          <Col md={4} className="mb-3 mt-3">
             <div className={imagesContainer}>
               <div className={imageCoverWrapper}>
                 <img src={data?.data.imageCover} />
@@ -128,8 +135,24 @@ const ProductPage = () => {
               )}
             </div>
           </Col>
-          <Col md={6}>
+          <Col md={8}>
             <div className={productInformationContainer}>
+              {user.role != 'admin' && (
+                <div
+                  className={wishlistBtn}
+                  onClick={() =>
+                    handleLikeToggle(data?.data._id as string, isLiked ?? false)
+                  }
+                >
+                  {addProductToWishlistLoading || removeFromWishlistLoading ? (
+                    <Spinner animation="border" size="sm" variant="primary" />
+                  ) : isLiked ? (
+                    <LikeFill />
+                  ) : (
+                    <Like />
+                  )}
+                </div>
+              )}
               <h2 style={{ textTransform: 'capitalize' }}>
                 {data?.data.title}
               </h2>
@@ -209,21 +232,27 @@ const ProductPage = () => {
                   Show More
                 </button>
               )}
-              {user.role != 'admin' && (
-                <Button
-                  variant="info"
-                  style={{ color: 'white', width: '100%' }}
-                  onClick={() => handleAddToCar()}
-                  disabled={addProductToCartLoading || isMax || !isSelectColor}
-                >
-                  {addProductToCartLoading ? (
-                    <>
-                      <Spinner animation="border" size="sm" /> Loading ...{' '}
-                    </>
-                  ) : (
-                    'Add to cart'
-                  )}
-                </Button>
+              {user.role != 'admin' && data?.data._id && (
+                <>
+                  <Button
+                    variant="info"
+                    style={{ color: 'white', width: '100%' }}
+                    onClick={() =>
+                      handleAddToCart(data?.data._id, currentColor)
+                    }
+                    disabled={addProductToCartLoading || isMax}
+                  >
+                    {addProductToCartLoading ? (
+                      <>
+                        <Spinner animation="border" size="sm" /> Loading ...{' '}
+                      </>
+                    ) : (
+                      <div>
+                        Add to cart {'  '} <MdAddShoppingCart size={20} />
+                      </div>
+                    )}
+                  </Button>
+                </>
               )}
               {!isSelectColor && (
                 <p style={{ color: 'red', margin: '10px 0' }}>
@@ -244,18 +273,24 @@ const ProductPage = () => {
             handleCloseForm={handleCloseForm}
           />
         )}
-        <div className={reviewsContainer}>
-          {myReview && !showForm && (
-            <div className={myReviewWrapper}>
-              <Review
-                {...myReview}
-                handleEdit={handleEdit}
-                showForm={() => setShowForm(true)}
-                showEditAndRemoveIcons
-              />
-            </div>
-          )}
-          <hr />
+        {myReview && !showForm && (
+          <div className={myReviewWrapper}>
+            <Review
+              {...myReview}
+              handleEdit={handleEdit}
+              showForm={() => setShowForm(true)}
+              showEditAndRemoveIcons
+            />
+          </div>
+        )}
+        <hr />
+        <div
+          style={{
+            backgroundColor:
+              records?.data && records?.data.length > 0 ? 'gray' : 'white',
+            margin: '10px 0',
+          }}
+        >
           <Loading
             isLoading={getReviewsLoading}
             error={getReviewsError}
@@ -276,6 +311,8 @@ const ProductPage = () => {
               md={12}
               lg={12}
               xl={12}
+              xxl={12}
+              mb={2}
             />
           </Loading>
         </div>

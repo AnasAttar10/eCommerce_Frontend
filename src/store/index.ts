@@ -18,6 +18,7 @@ import { wishlistApi } from './wishlist/wishlistApi';
 import { authApi } from './auth/authApi';
 import authSlice from './auth/authSlice';
 import cartSlice from './cart/cartSlice';
+import wishlistSlice from './wishlist/wishlistSlice';
 import searchSlice from './searchProduct/searchSlice';
 import { orderApi } from './order/orderApi';
 import { userApi } from './user/userApi';
@@ -42,10 +43,16 @@ const cartConfigReducer = {
   storage,
   whitelist: ['items', 'numOfCartItems'],
 };
+const wishlistConfigReducer = {
+  key: 'wishlist',
+  storage,
+  whitelist: ['wishlist', 'numOfWishlistItems'],
+};
 const rootReducer = combineReducers({
   auth: persistReducer(authConfigReducer, authSlice),
   cart: persistReducer(cartConfigReducer, cartSlice),
   search: persistReducer(cartConfigReducer, searchSlice),
+  wishlist: persistReducer(wishlistConfigReducer, wishlistSlice),
   [userApi.reducerPath]: userApi.reducer,
   [addressApi.reducerPath]: addressApi.reducer,
   [cartApi.reducerPath]: cartApi.reducer,

@@ -6,14 +6,14 @@ import Loading from '@components/feedback/Loading/Loading';
 import FilterForm from '@components/forms/FilterForm';
 import { useAppSelector } from '@store/hooks';
 import { useGetProductsQuery } from '@store/Product/productsApi';
-import { useGetWishlistItemsQuery } from '@store/wishlist/wishlistApi';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import SortBy from './SortBy';
 import useQueryString from '@hooks/useProductsQueryString';
+import useWishlistItems from '@hooks/useWishlistItems';
 const limit = 10;
 const Products = () => {
-  const { user, token } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const { productName } = useAppSelector((state) => state.search);
   const { prefix } = useParams();
   const {
@@ -33,18 +33,13 @@ const Products = () => {
     skip: productName ? isSendRequest : false,
   });
 
+  const { wishlistProductsIds, getWishlistLoading, getWishlistError } =
+    useWishlistItems();
   const categoryId = prefix ? products?.data[0]?.category : undefined;
-
-  const { data: wishlistItems, isLoading: wishlistLoading } =
-    useGetWishlistItemsQuery(undefined, {
-      skip: user.role === 'admin' || !token,
-    });
-
-  const wishlistProductsArr = wishlistItems?.data?.map((wi) => wi._id);
 
   const productsWithLike = products?.data?.map((p) => ({
     ...p,
-    isLiked: wishlistProductsArr?.includes(p._id),
+    isLiked: wishlistProductsIds?.includes(p._id),
   }));
 
   return (
@@ -69,8 +64,8 @@ const Products = () => {
         </Col>
         <Col xs={12} sm={12} md={12} lg={9} xl={10}>
           <Loading
-            isLoading={productsLoading || wishlistLoading}
-            error={error}
+            isLoading={productsLoading || getWishlistLoading}
+            error={error ?? getWishlistError}
             type="product"
           >
             <GridList

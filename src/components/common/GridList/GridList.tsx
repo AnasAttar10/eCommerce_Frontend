@@ -11,6 +11,7 @@ type IGridLis<T> = {
   lg?: number;
   xl?: number;
   xxl?: number;
+  mb?: number;
 };
 type IHasId = {
   _id: string;
@@ -25,6 +26,7 @@ const GridList = <T extends IHasId>({
   lg = 4,
   xl = 3,
   xxl = 3,
+  mb = 5,
 }: IGridLis<T>) => {
   const recordsList =
     records.length > 0 &&
@@ -37,7 +39,7 @@ const GridList = <T extends IHasId>({
         xl={xl}
         xxl={xxl}
         key={r._id}
-        className="d-flex justify-content-center mb-5 mt-2"
+        className={`d-flex justify-content-center mb-${mb} mt-2`}
       >
         {renderRecord(r)}
       </Col>

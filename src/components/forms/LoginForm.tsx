@@ -11,6 +11,9 @@ import useCartItems from '@hooks/useCartItems';
 import { useSyncCartAfterLoginMutation } from '@store/cart/cartApi';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { clearCartInStorage } from '@store/cart/cartSlice';
+import useWishlistItems from '@hooks/useWishlistItems';
+import { useSyncWishlistAfterLoginMutation } from '@store/wishlist/wishlistApi';
+import { clearWishlistInStorage } from '@store/wishlist/wishlistSlice';
 type TLoginForm = {
   handleNavigate: (targetPath: string) => void;
 };
@@ -19,8 +22,10 @@ const LoginForm = ({ handleNavigate }: TLoginForm) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { cartItems: cartItemsFromStorage } = useCartItems();
+  const { wishlistProductsIds, numOfWishlistItems } = useWishlistItems();
   const [signIn, { isLoading, error }] = useSignInMutation();
   const [syncCartAfterLogin] = useSyncCartAfterLoginMutation();
+  const [syncWishlistAfterLogin] = useSyncWishlistAfterLoginMutation();
   const {
     register,
     handleSubmit,
@@ -39,6 +44,14 @@ const LoginForm = ({ handleNavigate }: TLoginForm) => {
         );
         await syncCartAfterLogin({ cartItems: validItems });
         dispatch(clearCartInStorage());
+      }
+      if (
+        user.role != 'admin' &&
+        wishlistProductsIds &&
+        numOfWishlistItems > 0
+      ) {
+        await syncWishlistAfterLogin(wishlistProductsIds);
+        dispatch(clearWishlistInStorage());
       }
       handleNavigate('/');
     } catch (err) {

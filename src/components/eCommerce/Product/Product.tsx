@@ -1,15 +1,9 @@
 import { Button, Spinner } from 'react-bootstrap';
 import styles from './styles.module.css';
 import { TProduct } from '@types';
-import { useAppDispatch } from '@store/hooks';
 import { memo, useState } from 'react';
 import LikeFill from '@assets/svg/like-fill.svg?react';
 import Like from '@assets/svg/like.svg?react';
-import {
-  useAddToWishlistMutation,
-  useRemoveFromWishlistMutation,
-  wishlistApi,
-} from '@store/wishlist/wishlistApi';
 import { FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
 import ErrorMessage from '@components/feedback/ErrorMessage/ErrorMessage';
 import { useRemoveProductMutation } from '@store/Product/productsApi';
@@ -18,6 +12,7 @@ import { MdAddShoppingCart } from 'react-icons/md';
 import ModalB from '@components/feedback/Modal/ModalB';
 import useRemovingMessage from '@hooks/useRemovingMessage';
 import useCartItems from '@hooks/useCartItems';
+import useWishlistItems from '@hooks/useWishlistItems';
 const {
   product,
   productImg,
@@ -63,14 +58,13 @@ const Product = memo(
       removeProduct,
       { isLoading: removeProductLoading, error: removeProductError },
     ] = useRemoveProductMutation();
-    const dispatch = useAppDispatch();
     const isMax = quantity <= 0;
-
-    const [addToWishlist, { isLoading: isAddToWishlistLoading }] =
-      useAddToWishlistMutation();
-    const { handleAddToCar, addProductToCartLoading } = useCartItems();
-    const [removeFromWishlist, { isLoading: isRemoveFromWishlistLoading }] =
-      useRemoveFromWishlistMutation();
+    const { handleAddToCart, addProductToCartLoading } = useCartItems();
+    const {
+      handleLikeToggle,
+      addProductToWishlistLoading,
+      removeFromWishlistLoading,
+    } = useWishlistItems();
 
     const [currentColor, setCurrentColor] = useState<string | undefined>(
       undefined
@@ -91,44 +85,6 @@ const Product = memo(
       e.stopPropagation();
       setCurrentColor(color);
     };
-    const handleLikeToggle = async () => {
-      if (isAddToWishlistLoading || isRemoveFromWishlistLoading) return;
-      dispatch(
-        wishlistApi.util.updateQueryData(
-          'getWishlistItems',
-          undefined,
-          (draft) => {
-            if (!draft?.data) return;
-            if (isLiked) {
-              draft.data = draft.data.filter(
-                (item: { _id: string }) => item._id !== _id
-              );
-            } else {
-              draft.data.push({
-                _id,
-                title,
-                price,
-                imageCover,
-                quantity,
-                description: '',
-                category: '',
-              });
-            }
-          }
-        )
-      );
-
-      try {
-        if (isLiked) {
-          await removeFromWishlist(_id).unwrap();
-        } else {
-          await addToWishlist(_id).unwrap();
-        }
-      } catch (error) {
-        console.error('Wishlist update failed', error);
-        dispatch(wishlistApi.util.invalidateTags(['wishlist'])); // Refetch if API fails
-      }
-    };
 
     const handleOnRemove = async () => {
       if (selectedElement) {
@@ -146,8 +102,11 @@ const Product = memo(
           handleSave={handleOnRemove}
         />
         {showLikeIcon && (
-          <div className={wishlistBtn} onClick={handleLikeToggle}>
-            {isAddToWishlistLoading || isRemoveFromWishlistLoading ? (
+          <div
+            className={wishlistBtn}
+            onClick={() => handleLikeToggle(_id, isLiked ?? false)}
+          >
+            {addProductToWishlistLoading || removeFromWishlistLoading ? (
               <Spinner animation="border" size="sm" variant="primary" />
             ) : isLiked ? (
               <LikeFill />
@@ -218,7 +177,7 @@ const Product = memo(
           <Button
             variant="info"
             style={{ color: 'white' }}
-            onClick={() => handleAddToCar(_id, currentColor)}
+            onClick={() => handleAddToCart(_id, currentColor)}
             disabled={addProductToCartLoading || isMax}
           >
             {addProductToCartLoading ? (

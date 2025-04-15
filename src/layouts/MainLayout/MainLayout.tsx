@@ -12,6 +12,7 @@ const MainLayout = () => {
   const shouldHideAside =
     location.pathname.startsWith('/categories/products') ||
     location.pathname.startsWith('/products') ||
+    location.pathname.startsWith('/product') ||
     location.pathname.startsWith('/categories');
   return (
     <Container className={container}>

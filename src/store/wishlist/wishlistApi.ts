@@ -10,10 +10,6 @@ export interface IGetLoggedUserWishList {
   results: number;
   data: TProduct[];
 }
-export interface ILikeToggle {
-  isLiked: boolean;
-  productId: string;
-}
 
 export const wishlistApi = createApi({
   reducerPath: 'wishlistapi',
@@ -24,7 +20,15 @@ export const wishlistApi = createApi({
       query: () => `/wishlist`,
       providesTags: ['wishlist'],
     }),
-    addToWishlist: builder.mutation({
+    syncWishlistAfterLogin: builder.mutation<IGetLoggedUserWishList, string[]>({
+      query: (wishlistItems) => ({
+        url: `/wishlist/sync`,
+        method: 'post',
+        body: wishlistItems,
+      }),
+      invalidatesTags: ['wishlist'],
+    }),
+    addToWishlist: builder.mutation<IGetLoggedUserWishList, string>({
       query: (productId: string) => ({
         url: `/wishlist`,
         method: 'post',
@@ -32,7 +36,7 @@ export const wishlistApi = createApi({
       }),
       invalidatesTags: ['wishlist'],
     }),
-    removeFromWishlist: builder.mutation({
+    removeFromWishlist: builder.mutation<IGetLoggedUserWishList, string>({
       query: (productId: string) => ({
         url: `/wishlist/${productId}`,
         method: 'delete',
@@ -46,4 +50,5 @@ export const {
   useGetWishlistItemsQuery,
   useAddToWishlistMutation,
   useRemoveFromWishlistMutation,
+  useSyncWishlistAfterLoginMutation,
 } = wishlistApi;

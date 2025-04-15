@@ -1,5 +1,4 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit';
-
+import { createSlice } from '@reduxjs/toolkit';
 export interface ICart {
   items: { id: string; quantity: number; color: string }[];
   loading: boolean;
@@ -61,18 +60,6 @@ const cartSlice = createSlice({
     },
   },
 });
-export const getCartTotalQuantity = createSelector(
-  [(state) => state.cart.items, (_state, id) => id],
-  (items: ICart, id: keyof ICart) => {
-    const totalQuantity = Object.values(items[id] ? items[id] : []).reduce(
-      (init, currentValue) => {
-        return init + currentValue;
-      },
-      0
-    );
-    return totalQuantity;
-  }
-);
 export const {
   addToCart,
   cartItemChangeQuantity,
