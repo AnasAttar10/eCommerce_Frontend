@@ -77,7 +77,7 @@ const AllOrdersPage = () => {
             description={el.product.description}
             imageCover={el.product.imageCover}
             price={el.price}
-            colors={[el.color]}
+            colors={el.color ? [el.color] : undefined}
             quantity={el.quantity}
             showButton={false}
             showLikeIcon={false}

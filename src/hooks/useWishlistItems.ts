@@ -17,15 +17,16 @@ const useWishlistItems = () => {
   const { wishlist, numOfWishlistItems } = useAppSelector(
     (state) => state.wishlist
   );
-  const productsIds = wishlist.map((i) => i).join(',');
-  const queryString = productsIds;
+  const productsIds = wishlist.length > 0 ? wishlist.join(',') : '';
+  const queryString = productsIds ? `?_id=${productsIds}` : '';
 
   const {
     data: productsInServer,
     isLoading: getProductsInStorageLoading,
     error: getProductsInStorageError,
-  } = useGetProductsQuery(`?_id=${queryString}`, {
-    skip: user.role === 'admin' || !queryString || Boolean(token),
+    refetch: refetchProducts,
+  } = useGetProductsQuery(queryString, {
+    skip: user.role === 'admin' || Boolean(token) || wishlist.length === 0,
   });
 
   const {
@@ -76,7 +77,11 @@ const useWishlistItems = () => {
     try {
       if (isLiked) {
         if (token) await removeFromWishlist(_id).unwrap();
-        else dispatch(removeFromWishlistStorage(_id));
+        else {
+          dispatch(removeFromWishlistStorage(_id));
+          refetchProducts();
+          console.log('anas');
+        }
       } else {
         if (token) await addToWishlist(_id).unwrap();
         else dispatch(addToWishlistStorage(_id));
@@ -102,6 +107,7 @@ const useWishlistItems = () => {
     getWishlistError: getWishlistError ?? getProductsInStorageError,
     handleLikeToggle,
     checkIfTheProductInWishlist,
+    isWishlistEmpty: !token && numOfWishlistItems === 0,
   };
 };
 export default useWishlistItems;

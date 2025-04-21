@@ -73,10 +73,10 @@ const Product = memo(
     if (colors && colors?.length > 0) {
       if (colors?.length == 1) {
         isSelectColor = true;
-      }
-      if (currentColor) isSelectColor = true;
+      } else if (currentColor) isSelectColor = true;
       else isSelectColor = false;
     } else isSelectColor = true;
+
     const handleSelectColor = (
       e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
       color: string
@@ -161,17 +161,15 @@ const Product = memo(
             </div>
           )}
 
-          {showQuantity && (
-            <>
-              {quantity <= 0 ? (
-                <div className={mourningRibbon}>
-                  <h3 className={maximumNotice}>NOT AVAILABLE </h3>
-                </div>
-              ) : (
-                <h3>Quantity : {quantity} </h3>
-              )}
-            </>
-          )}
+          <>
+            {quantity <= 0 ? (
+              <div className={mourningRibbon}>
+                <h3 className={maximumNotice}>NOT AVAILABLE </h3>
+              </div>
+            ) : (
+              showQuantity && <h3>Quantity : {quantity} </h3>
+            )}
+          </>
         </Link>
         {showButton && (
           <Button

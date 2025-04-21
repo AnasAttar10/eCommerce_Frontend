@@ -52,8 +52,7 @@ const ProductPage = () => {
   if (data?.data?.colors && data?.data?.colors?.length > 0) {
     if (data?.data?.colors?.length == 1) {
       isSelectColor = true;
-    }
-    if (currentColor) isSelectColor = true;
+    } else if (currentColor) isSelectColor = true;
     else isSelectColor = false;
   } else isSelectColor = true;
 

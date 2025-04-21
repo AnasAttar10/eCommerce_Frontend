@@ -6,12 +6,18 @@ import useWishlistItems from '@hooks/useWishlistItems';
 import { Container } from 'react-bootstrap';
 
 const Wishlist = () => {
-  const { wishlistItems, getWishlistLoading, getWishlistError } =
-    useWishlistItems();
-  const productsWithLike = wishlistItems?.data?.map((p) => ({
-    ...p,
-    isLiked: true,
-  }));
+  const {
+    wishlistItems,
+    isWishlistEmpty,
+    getWishlistLoading,
+    getWishlistError,
+  } = useWishlistItems();
+  const productsWithLike = !isWishlistEmpty
+    ? wishlistItems?.data?.map((p) => ({
+        ...p,
+        isLiked: true,
+      }))
+    : [];
 
   return (
     <Container>
