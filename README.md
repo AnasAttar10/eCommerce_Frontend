@@ -43,8 +43,14 @@ To run the POS Project, ensure that you have the following prerequisites: Node.j
 
 ## 🧰 Tech Stack
 
-Frontend : React ,Redux Toolkit ,React Hook Form  ,React Router  .
-Backend : Node.js,Express , cloudinary , MongoDB  ,JWT .
-other : Postman , git .
+**Frontend**:  
+React, Redux Toolkit, React Router, React Hook Form
+
+**Backend**:  
+Node.js, Express, MongoDB, JWT, Cloudinary
+
+**Tools**:  
+Postman, Git, GitHub
+
 ---
 
