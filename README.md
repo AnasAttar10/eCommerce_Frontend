@@ -1,30 +1,50 @@
-# React + TypeScript + Vite
+# 🛒 eCommerce Platform – MERN Stack Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and responsive full-stack **eCommerce web application** built using the **MERN stack** (MongoDB, Express, React, Node.js) and **Redux Toolkit**.  
+The platform offers a smooth shopping experience for users and full control for admins via a secured admin panel.
 
-Currently, two official plugins are available:
+🔗 **Live Website**: [e-commerce-frontend-two-chi.vercel.app](https://e-commerce-frontend-two-chi.vercel.app)  
+💻 **Frontend Repo**: [GitHub - eCommerce Frontend](https://github.com/AnasAttar10/eCommerce-Frontend)  
+🛠️ **Backend Repo**: [GitHub - eCommerce Backend](https://github.com/AnasAttar10/eCommerce-Backend)  
+🎥 **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=DqbdwnLG2Jg)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
+## Installation
+To run the POS Project, ensure that you have the following prerequisites: Node.js NPM Follow these steps to install and set up the project:
+   1. Clone the repository
+   2. Install dependencies: npm install
+   3. Start the application : npm start
+      
+## 🚀 Features
 
-## Expanding the ESLint configuration
+### 👥 User Functionality
+- JWT-based authentication (Register / Login)
+- Browse all products with search and category filters
+- View product details
+- Add/remove items from cart
+- Checkout with order summary
+- View past orders
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 🛠️ Admin Functionality
+- Admin login with role-based access
+- Add / edit / delete products ,categories , coupons ,brands and orders 
+- Upload product / category / brand  images via Cloudinary
+- Manage users and orders
+- Update order delivery status
 
-- Configure the top-level `parserOptions` property like this:
+### 💡 Other Features
+- Fully responsive layout (mobile-friendly)
+- REST API integration between frontend and backend
+- State management using Redux Toolkit
+- Secure backend with input validation and token-based auth
+- Built-in form validation with React Hook Form
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+---
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## 🧰 Tech Stack
+
+Frontend : React ,Redux Toolkit ,React Hook Form  ,React Router  .
+Backend : Node.js,Express , cloudinary , MongoDB  ,JWT .
+other : Postman , git .
+---
+
